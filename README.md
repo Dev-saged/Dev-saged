@@ -39,7 +39,6 @@
 <br>
 <div align="center">
   <h2>✦ 📊 GitHub Metrics | إحصائياتي ✦</h2>
-  <p><i>(ستعمل هذه الإحصائيات تلقائياً بمجرد رفع أول مشروع عام في حسابك)</i></p>
 </div>
 <div align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=Dev-saged&show_icons=true&theme=tokyonight&hide_border=true&title_color=2196F3" height="195" alt="Stats" />
