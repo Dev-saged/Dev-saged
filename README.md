@@ -10,9 +10,9 @@
   <h2>✦ 👤 About The Developer | عن المطور ✦</h2>
   <p><b>Creative Architect & Systems Integrator | مهندس نُظم ومطور حلول إبداعية</b></p>
 </div>
-> 🌍 **Global Vision:**
+> 🌍 Global Vision:
 > I architect and deploy comprehensive, offline-first software solutions and complex automation workflows. My unique approach involves engineering entire enterprise-grade systems exclusively from mobile environments, bypassing traditional hardware limitations to deliver pure performance.
-> 🏆 **رؤية احترافية:**
+> 🏆رؤية احترافية:
 > أبتكر وأهندس حلولاً برمجية متكاملة وأنظمة تعمل بكفاءة بدون إنترنت. أتميز بقدرة استثنائية على بناء وتطوير بيئات تقنية معقدة وأتمتة مسارات العمل بالكامل اعتماداً على الهاتف المحمول، متجاوزاً بذلك القيود التقنية التقليدية لتقديم برمجيات عالية الأداء.
 <br>
 <div align="center">
