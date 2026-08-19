@@ -1,4 +1,4 @@
-د<div align="center">
+<div align="center">
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=25&pause=1000&color=2196F3&center=true&vCenter=true&width=600&lines=Welcome+To+My+Creative+Space;Mobile-First+Developer;Tech+Solutions+Integrator" alt="Typing SVG" />
 </div>
 <div align="center">
@@ -30,7 +30,7 @@
 <br>
 ### 📊 GitHub Metrics | إحصائياتي
 <div align="center">
-  
+  <!-- تغيير YOUR_USERNAME إلى اسم المستخدم الخاص بك ضروري لتفعيل الإحصائيات -->
   <img src="https://github-readme-stats.vercel.app/api?username=Dev-saged&show_icons=true&theme=tokyonight&hide_border=true&title_color=2196F3" height="195" alt="Stats" />
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=Dev-saged&theme=tokyonight&hide_border=true&stroke=0000&title_color=2196F3" height="195" alt="Streak" />
 </div>
