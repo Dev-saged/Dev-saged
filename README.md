@@ -1,273 +1,154 @@
-<!--
-  ╔══════════════════════════════════════════════════════════════╗
-  ║  README — Dev-saged | Sajed Al-Abadlah | ساجد العبادلة     ║
-  ║  🔗 github.com/Dev-saged                                     ║
-  ╚══════════════════════════════════════════════════════════════╝
--->
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=25&pause=1000&color=2196F3&center=true&vCenter=true&width=600&lines=Welcome+To+My+Creative+Space;Mobile-First+Developer;Arabic+AI+%26+Offline+Systems;Tech+Solutions+Integrator" alt="Typing SVG" />
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/badge/Sajed_Al--Abadlah-Software_Architect-0052cc?style=for-the-badge&logo=github" alt="Name Badge" />
+  <img src="https://img.shields.io/badge/Location-Palestine-2ea44f?style=for-the-badge&logo=google-maps" alt="Location" />
+</div>
+
+<div align="center">
+  <a href="https://instagram.com/sajedd0" target="_blank">
+    <img src="https://img.shields.io/badge/Instagram-sajedd0-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" />
+  </a>
+  <a href="https://facebook.com/sajed.t" target="_blank">
+    <img src="https://img.shields.io/badge/Facebook-sajed.t-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Facebook" />
+  </a>
+  <a href="https://wa.me/972597857250" target="_blank">
+    <img src="https://img.shields.io/badge/WhatsApp-+972_59_785_7250-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp" />
+  </a>
+</div>
 
 <div align="center">
 
-<!-- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  HEADER WAVE  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,38:0369a1,72:7c3aed,100:0f172a&height=250&section=header&text=Dev-saged&fontSize=80&fontAlignY=40&fontColor=f1f5f9&desc=AI%20%7C%20Mobile%20%7C%20Arabic%20RTL%20Developer&descAlignY=66&descSize=22&animation=fadeIn" width="100%"/>
-
-<!-- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  TYPING SVG (fixed — demolab)  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=21&duration=3000&pause=1000&color=38BDF8&background=00000000&center=true&vCenter=true&width=740&lines=Mobile-First+Developer+%7C+No+Desktop%2C+Ever+%F0%9F%87%B5%F0%9F%87%B8;Building+Offline-First+Arabic+Apps+from+a+Smartphone;Claude+AI+%7C+Python+%7C+WebToApp+Android;Humanitarian+Tech+from+the+Heart+of+Gaza" alt="Typing SVG" />
-
-<br/><br/>
-
-<!-- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  IDENTITY BADGES  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-<img src="https://img.shields.io/badge/Sajed_Al--Abadlah-Software_Architect-0369A1?style=for-the-badge&logo=github&logoColor=white&labelColor=0D1117" />
-&nbsp;
-<img src="https://img.shields.io/badge/Location-Palestine_🇵🇸-2EA44F?style=for-the-badge&labelColor=0D1117" />
-
-<br/><br/>
-
-<img src="https://img.shields.io/badge/Mobile--Only-Developer-7C3AED?style=for-the-badge&labelColor=0D1117" />
-&nbsp;
-<img src="https://img.shields.io/badge/Claude_AI-Integrated-38BDF8?style=for-the-badge&labelColor=0D1117" />
-&nbsp;
-<img src="https://img.shields.io/badge/Offline--First-Architect-F59E0B?style=for-the-badge&labelColor=0D1117" />
-&nbsp;
-<img src="https://img.shields.io/badge/15%2B_Apps-Shipped-10B981?style=for-the-badge&labelColor=0D1117" />
-
-<br/><br/>
+### [🇬🇧 English](#english) &nbsp;|&nbsp; [🇸🇦 العربية](#arabic)
 
 </div>
 
 ---
 
-### 🇬🇧 [English](#english-section) &nbsp;·&nbsp; 🇸🇦 [العربية](#arabic-section)
+<a name="english"></a>
 
----
+<div align="center">
+  <h2>✦ 👤 About The Developer ✦</h2>
+  <p><b>Creative Architect & Systems Integrator</b></p>
+</div>
 
-<a id="english-section"></a>
+🌍 **Global Vision:**
+I architect and deploy comprehensive, offline-first software solutions and complex automation workflows. My unique approach involves engineering entire enterprise-grade systems exclusively from mobile environments, bypassing traditional hardware limitations to deliver pure performance.
 
-## 👤 About The Developer
+**Highlights:**
+- 📱 Designs, codes, and ships complete systems entirely from a mobile phone — no desktop, ever
+- 🧠 Built a browser-based Arabic prompt-optimization engine with real NLP — dialect normalization, quality scoring, multi-variant rephrasing
+- 🔒 Shipped a fully offline, client-side coordination tool built for field privacy — zero backend
+- 🤖 Built cross-platform content automation pipelines: Telegram bots + Python + scheduled publishing
+- ✅ Shipped features validated by a 124-case automated test suite, zero failures
 
-**Creative Architect & Systems Integrator** · Mobile-First · Offline-First · AI-Powered
+<br>
 
-🌍 I architect and deploy comprehensive, offline-first software solutions and complex automation workflows.  
-My defining trait: **engineering entire enterprise-grade systems exclusively from a smartphone — no desktop, ever.**
+<div align="center">
+  <h2>✦ ⚔️ Tech Arsenal ✦</h2>
+</div>
 
-<table>
-<tr>
-<td width="56%">
+<div align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=js,html,css,tailwind,bootstrap,python,bash,linux,android,github,vscode&theme=dark" alt="Skills" />
+  </a>
+</div>
 
-**What I build:**
+<div align="center">
+<sub>Also: Anthropic Claude API · Google Gemini API · Telegram Bot API · YouTube & TikTok APIs · Tesseract.js (OCR) · SheetJS (xlsx) · Web Audio API · Termux</sub>
+</div>
 
-- 📱 Complete production systems, designed, coded and shipped from a **mobile phone only**
-- 🧠 Browser-based Arabic prompt-optimization with real NLP — dialect normalization, quality scoring, multi-variant rephrasing
-- 🛡️ Fully offline, client-side tools for humanitarian field work — zero backend, maximum privacy
-- 🤖 Cross-platform automation pipelines — Telegram bots + Python + scheduled publishing
-- ✅ Features validated by a **124-case automated test suite, zero failures**
-- 🏕️ Humanitarian systems managing aid distribution for displaced families in Gaza camps
+<br>
 
-</td>
-<td width="44%" align="center">
+<div align="center">
+  <h2>✦ 🏰 Featured Quests ✦</h2>
+</div>
 
-| | |
-|:--|:--|
-| **Shipped Apps** | 15+ |
-| **Primary Stack** | HTML/JS + Python |
-| **AI Models** | Claude · Gemini |
-| **Platform** | Android + PWA |
-| **Architecture** | Offline-First |
-| **Specialty** | Arabic RTL |
-| **Packaging** | WebToApp |
-| **Base** | Gaza 🇵🇸 |
-
-</td>
-</tr>
-</table>
-
----
-
-## ⚔️ Tech Arsenal
+| 👑 Project | 📄 Description | 🛠️ Tech |
+| :--- | :--- | :--- |
+| 🧠 **PromptForge AI Pro** | Single-file Arabic AI prompt optimizer with real NLP, live multi-variant rephrasing, and image-to-prompt extraction. | `JS`, `Multi-Provider AI` |
+| 🛡️ **[Offline Aid Manager](https://github.com/Dev-saged/offline-aid-manager)** | Client-side coordination system processing massive Excel/CSV rosters directly in-browser. | `JS`, `Offline-API` |
+| 📱 **AI Prompt Improver** | Android app rewriting text into structured AI prompts via a dependency-free Python backend. | `Python`, `Android` |
+| 🎬 **Lakta Automator** | Cloud-scheduled multi-platform video publishing and clipping engine via bots. | `Python`, `Telegram API` |
+| 🧰 **Adawati Toolkit** | Dashboard packaging independent HTML5 utilities into native Android APKs. | `Web-to-APK`, `Bootstrap` |
+| 🎧 **Browser Audio Engine** | Browser-native audio engine with real-time beat matching for live event mixing. | `JS`, `Web Audio API` |
 
 <div align="center">
 
-**Frontend & Mobile**
-<br>
-<img src="https://skillicons.dev/icons?i=html,css,js,ts,tailwind,bootstrap&theme=dark" />
-
-<br/><br/>
-
-**AI, Automation & Data**
-<br>
-<img src="https://skillicons.dev/icons?i=python,bash,linux,firebase,sqlite&theme=dark" />
-
-<br/><br/>
-
-**Tools & Platforms**
-<br>
-<img src="https://skillicons.dev/icons?i=git,github,androidstudio,vscode,react,vite&theme=dark" />
-
-<br/><br/>
-
-`Anthropic Claude API` &nbsp;·&nbsp; `Google Gemini API` &nbsp;·&nbsp; `Telegram Bot API` &nbsp;·&nbsp; `YouTube & TikTok APIs`  
-`Tesseract.js (OCR)` &nbsp;·&nbsp; `SheetJS (xlsx)` &nbsp;·&nbsp; `Web Audio API` &nbsp;·&nbsp; `PDF.js` &nbsp;·&nbsp; `Termux`
+[🇸🇦 اقرأ بالعربية](#arabic)
 
 </div>
 
 ---
 
-## 🏰 Projects
+<a name="arabic"></a>
 
-<details open>
-<summary><b>🛡️ Humanitarian Tools &nbsp;(4)</b></summary>
+<div dir="rtl" align="right">
+
+<div align="center">
+  <h2>✦ 👤 عن المطور ✦</h2>
+  <p><b>مهندس نُظم ومطور حلول إبداعية</b></p>
+</div>
+
+🏆 **رؤية احترافية:**
+أبتكر وأهندس حلولاً برمجية متكاملة وأنظمة تعمل بكفاءة بدون إنترنت. أتميز بقدرة استثنائية على بناء وتطوير بيئات تقنية معقدة وأتمتة مسارات العمل بالكامل اعتماداً على الهاتف المحمول، متجاوزاً بذلك القيود التقنية التقليدية لتقديم برمجيات عالية الأداء.
+
+**أبرز النقاط:**
+- 📱 يصمم ويبرمج ويطلق أنظمة متكاملة بالكامل من الموبايل — بدون حاسوب أبدًا
+- 🧠 بنى محرك تحسين prompts عربي بالمتصفح بـ NLP حقيقي — تطبيع لهجات، تقييم جودة، rephrasing متعدد المتغيرات
+- 🔒 أطلق أداة تنسيق offline بالكامل من جهة العميل، لحماية خصوصية العمل الميداني — بدون خادم
+- 🤖 بنى مسارات أتمتة محتوى عبر منصات متعددة: بوتات Telegram + Python + نشر مجدول
+- ✅ ميزات موثّقة باختبارات آلية: 124 اختبار، صفر فشل
+
 <br>
 
-| Project | Description | Stack |
-|---------|-------------|-------|
-| **[منظومة مخيمات النزوح](https://github.com/Dev-saged/gaza-camp-system)** | Full camp management for displaced families — registration, aid distribution, PDF reports | `HTML` `IndexedDB` `Offline` `PWA` |
-| **[Anira — إنابات المستفيدين](https://github.com/Dev-saged/aneera)** | Proxy registration for humanitarian aid orgs — 100% offline, full RTL | `HTML` `RTL` `Android` `Offline` |
-| **[Offline Aid Manager](https://github.com/Dev-saged/beneficiary-manager)** | Processes massive Excel/CSV beneficiary rosters entirely in-browser, zero server | `JS` `SheetJS` `Offline-API` |
-| **[السجل المدني الفلسطيني](https://github.com/Dev-saged/civil-registry)** | Palestinian civil registry search — Python/SQLite, Offline 100% | `Python` `SQLite` `JS` `Android` |
+<div align="center">
+  <h2>✦ ⚔️ الأسلحة التقنية ✦</h2>
+</div>
 
-</details>
+<div align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=js,html,css,tailwind,bootstrap,python,bash,linux,android,github,vscode&theme=dark" alt="Skills" />
+  </a>
+</div>
 
-<details>
-<summary><b>🤖 AI-Powered Apps &nbsp;(5)</b></summary>
+<div align="center">
+<sub>كمان: Anthropic Claude API · Google Gemini API · Telegram Bot API · YouTube & TikTok APIs · Tesseract.js (OCR) · SheetJS (xlsx) · Web Audio API · Termux</sub>
+</div>
+
 <br>
 
-| Project | Description | Stack |
-|---------|-------------|-------|
-| **[Vyce AI Studio](https://github.com/Dev-saged/vyce-ai-studio)** | Arabic AI chat app — 14+ features, Streaming, file analysis, multi-modal | `Claude API` `Streaming` `RTL` |
-| **[PromptForge AI Pro](https://github.com/Dev-saged/promptforge-ai-pro)** | Arabic AI prompt optimizer — real NLP, dialect normalization, multi-variant rephrasing | `JS` `Claude API` `Multi-Provider` |
-| **[AI Prompt Improver](https://github.com/Dev-saged/ai-prompt-improver)** | Android app converting text to structured AI prompts via stdlib-only Python backend | `Python` `Android` `WebToApp` |
-| **[ستيديو ثواني — Kids Stories](https://github.com/Dev-saged/sawan-kids-studio)** | Bilingual AI-illustrated children's story generator (AR + EN) | `Claude API` `Bilingual` `AI Images` |
-| **[Video Insight Pro](https://github.com/Dev-saged/video-insight-pro)** | Scene-by-scene video analysis with automatic prompt extraction | `React` `Vite` `Gemini API` |
+<div align="center">
+  <h2>✦ 🏰 أبرز الإنجازات ✦</h2>
+</div>
 
-</details>
+| 👑 المشروع | 📄 الوصف | 🛠️ التقنيات |
+| :--- | :--- | :--- |
+| 🧠 **PromptForge AI Pro** | أداة عربية لتحسين الـ prompts بملف واحد، NLP حقيقي، وrephrasing حي متعدد المتغيرات. | `JS`, `Multi-Provider AI` |
+| 🛡️ **[Offline Aid Manager](https://github.com/Dev-saged/offline-aid-manager)** | نظام تنسيق ميداني يعالج قوائم بيانات ضخمة (Excel/CSV) بالكامل من المتصفح. | `JS`, `Offline-API` |
+| 📱 **AI Prompt Improver** | تطبيق أندرويد يحوّل النص لـ prompt منظّم عبر backend بايثون بلا مكتبات خارجية. | `Python`, `Android` |
+| 🎬 **Lakta Automator** | محرك جدولة ونشر وقص فيديو متعدد المنصات، يعمل عبر بوتات Telegram. | `Python`, `Telegram API` |
+| 🧰 **Adawati Toolkit** | لوحة تجمع أدوات HTML5 مستقلة بتطبيق أندرويد أصلي واحد. | `Web-to-APK`, `Bootstrap` |
+| 🎧 **Browser Audio Engine** | محرك صوتي مبني بالمتصفح بمزامنة إيقاع حية لمناسبات مباشرة. | `JS`, `Web Audio API` |
 
-<details>
-<summary><b>⚡ Automation & Bots &nbsp;(3)</b></summary>
-<br>
-
-| Project | Description | Stack |
-|---------|-------------|-------|
-| **[Lakta Automator](https://github.com/Dev-saged/MoneyPrinterTurbo-sajed)** | Cloud-scheduled multi-platform video publishing & clipping engine via bots | `Python` `Telegram API` `Scheduled` |
-| **[Dukanak Bot — بوت دُكانك](https://github.com/Dev-saged/Dukanak-Bot)** | Telegram automation bot for Dukanak app — notifications & workflow | `Python` `Telegram Bot API` |
-| **[NetSubsManager](https://github.com/Dev-saged/NetSubsManager)** | Network subscriptions management tool | `HTML` `JS` |
-
-</details>
-
-<details>
-<summary><b>💼 Productivity & Finance &nbsp;(4)</b></summary>
-<br>
-
-| Project | Description | Stack |
-|---------|-------------|-------|
-| **[دفتري](https://github.com/Dev-saged/daftari)** | Personal debt tracker — Offline PWA, no login required | `HTML` `IndexedDB` `PWA` `Android` |
-| **[محلات العبادلة — الدفتر](https://github.com/Dev-saged/abadlah-debt-manager)** | 3-branch shop debt management with Firebase Firestore sync | `HTML` `Firebase Firestore` `Multi-branch` |
-| **[Release Manager Pro](https://github.com/Dev-saged/release-manager-pro)** | GitHub Releases management with Gemini AI code analysis | `HTML` `GitHub API` `Gemini AI` |
-| **[ReadUp English](https://github.com/Dev-saged/readup-english)** | Learn English in Arabic — single-file Android app | `HTML` `Claude API` `WebToApp` `RTL` |
-
-</details>
-
-<details>
-<summary><b>🎨 Creative & Tools &nbsp;(3)</b></summary>
-<br>
-
-| Project | Description | Stack |
-|---------|-------------|-------|
-| **[Adawati Toolkit](https://github.com/Dev-saged/adawati)** | Dashboard packaging independent HTML5 utilities into one native Android APK | `Web-to-APK` `Bootstrap` `HTML5` |
-| **[استيديو ساجد — Browser Audio Engine](https://github.com/Dev-saged/studio-sajid)** | Wedding remix studio — karaoke, real-time beat matching, Arabic/English STT | `Web Audio API` `STT` `Karaoke` |
-| **[محرر — PDF Signer](https://github.com/Dev-saged/pdf-editor)** | Sign & annotate PDFs — fully client-side, zero server | `PDF.js` `Canvas API` `No Server` |
-
-</details>
-
----
-
-## 📊 GitHub Stats
+</div>
 
 <div align="center">
 
-<img height="180" src="https://github-readme-stats.vercel.app/api?username=Dev-saged&show_icons=true&count_private=true&theme=tokyonight&hide_border=true&bg_color=0D1117&icon_color=38BDF8&title_color=38BDF8&text_color=CBD5E1&ring_color=7C3AED&border_radius=12" />
-&nbsp;&nbsp;
-<img height="180" src="https://github-readme-stats.vercel.app/api/top-langs/?username=Dev-saged&layout=compact&langs_count=6&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=38BDF8&text_color=CBD5E1&border_radius=12" />
-
-<br/><br/>
-
-<img src="https://streak-stats.demolab.com?user=Dev-saged&theme=tokyonight-duo&hide_border=true&background=0D1117&ring=38BDF8&fire=7C3AED&currStreakLabel=38BDF8&sideLabels=CBD5E1&border_radius=12" />
+[🇬🇧 Read in English](#english)
 
 </div>
 
 ---
 
-## 📈 Code Activity
-
 <div align="center">
-
-<img src="https://github-readme-activity-graph.vercel.app/graph?username=Dev-saged&bg_color=0D1117&color=38BDF8&line=7C3AED&point=F1F5F9&area=true&area_color=1e1b4b&hide_border=true&radius=8" width="96%"/>
-
-</div>
-
----
----
-
-<a id="arabic-section"></a>
-
-## 👤 عن المطور
-
-**مهندس نُظم ومطور حلول إبداعية** · موبايل أولاً · بدون إنترنت · مدعوم بالذكاء الاصطناعي
-
-🏆 أبتكر وأهندس حلولاً برمجية متكاملة تعمل بكفاءة حتى في انقطاع الإنترنت الكامل.  
-ما يميّزني: **بناء أنظمة مؤسسية متكاملة بالكامل من الهاتف — بدون حاسوب أبدًا.**
-
-<table>
-<tr>
-<td width="56%">
-
-**أبرز ما أبنيه:**
-
-- 📱 أنظمة إنتاجية متكاملة، مبرمجة ومطلقة **من الموبايل فقط**
-- 🧠 محرك تحسين prompts عربي بالمتصفح — تطبيع لهجات، تقييم جودة، rephrasing متعدد المتغيرات
-- 🛡️ أدوات تنسيق Offline لحماية خصوصية العمل الميداني — صفر خوادم
-- 🤖 مسارات أتمتة متعددة المنصات: بوتات Telegram + Python + نشر مجدول
-- ✅ **124 اختبار آلي، صفر فشل**
-- 🏕️ أنظمة إنسانية لتسجيل وإدارة عائلات المهجّرين في مخيمات غزة
-
-</td>
-<td width="44%" align="center">
-
-| | |
-|:--|:--|
-| **التطبيقات المنشورة** | 15+ |
-| **Stack الأساسي** | HTML/JS + Python |
-| **نماذج AI** | Claude · Gemini |
-| **المنصة** | Android + PWA |
-| **المعمارية** | Offline-First |
-| **التخصص** | Arabic RTL |
-| **التعبئة** | WebToApp |
-| **الموقع** | غزة 🇵🇸 |
-
-</td>
-</tr>
-</table>
-
-> *المشاريع والإحصاءات موثّقة كاملةً أعلاه — [↑ العودة للأعلى](#english-section)*
-
----
-
-<div align="center">
-
-<br/>
-
-> *"أجود كود يُكتب حين تكون المخاطر حقيقية — والمستخدم أمامك"*
-
-<br/>
-
-<img src="https://img.shields.io/badge/Open_to-Collaboration-10B981?style=for-the-badge&labelColor=0D1117" />
-&nbsp;
-<img src="https://img.shields.io/badge/Focus-Humanitarian_Tech-7C3AED?style=for-the-badge&labelColor=0D1117" />
-
-<br/><br/>
-
-<img src="https://komarev.com/ghpvc/?username=Dev-saged&color=38BDF8&style=for-the-badge&label=PROFILE+VIEWS&labelColor=0D1117" />
-
-<br/><br/>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,40:7c3aed,75:0369a1,100:0f172a&height=130&section=footer" width="100%"/>
-
+  <h2>✦ 📊 GitHub Metrics | إحصائياتي ✦</h2>
+  <img src="https://github-readme-stats.vercel.app/api?username=Dev-saged&show_icons=true&theme=tokyonight&hide_border=true&title_color=2196F3" height="195" alt="Stats" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Dev-saged&layout=compact&theme=tokyonight&hide_border=true&title_color=2196F3" height="195" alt="Top Languages" />
+  <br>
+  <img src="https://streak-stats.demolab.com/?user=Dev-saged&theme=tokyonight&hide_border=true&stroke=0000&title_color=2196F3" alt="Streak" />
+  <br>
+  <img src="https://github-profile-trophy.vercel.app/?username=Dev-saged&theme=tokyonight&no-frame=true&row=1&column=6" alt="Trophies" />
 </div>
