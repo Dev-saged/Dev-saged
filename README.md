@@ -8,10 +8,10 @@
 </div>
 
 <div align="center">
-  <a href="https://instagram.com/sajedd0" target="_blank">
+  <a href="https://instagram.com/sajedd.0" target="_blank">
     <img src="https://img.shields.io/badge/Instagram-sajedd0-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" />
   </a>
-  <a href="https://facebook.com/sajed.t" target="_blank">
+  <a href="https://facebook.com/saged.t" target="_blank">
     <img src="https://img.shields.io/badge/Facebook-sajed.t-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Facebook" />
   </a>
   <a href="https://wa.me/972597857250" target="_blank">
