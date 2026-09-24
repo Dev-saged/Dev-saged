@@ -69,7 +69,7 @@ I architect and deploy comprehensive, offline-first software solutions and compl
 | 👑 Project | 📄 Description | 🛠️ Tech |
 | :--- | :--- | :--- |
 | 🧠 **PromptForge AI Pro** | Single-file Arabic AI prompt optimizer with real NLP, live multi-variant rephrasing, and image-to-prompt extraction. | `JS`, `Multi-Provider AI` |
-| 🛡️ **Offline Aid Manager** | Client-side coordination system processing massive Excel/CSV rosters directly in-browser. | `JS`, `Offline-API` |
+| 🛡️ **[Offline Aid Manager](https://github.com/Dev-saged/offline-aid-manager)** | Client-side coordination system processing massive Excel/CSV rosters directly in-browser. | `JS`, `Offline-API` |
 | 📱 **AI Prompt Improver** | Android app rewriting text into structured AI prompts via a dependency-free Python backend. | `Python`, `Android` |
 | 🎬 **Lakta Automator** | Cloud-scheduled multi-platform video publishing and clipping engine via bots. | `Python`, `Telegram API` |
 | 🧰 **Adawati Toolkit** | Dashboard packaging independent HTML5 utilities into native Android APKs. | `Web-to-APK`, `Bootstrap` |
@@ -127,7 +127,7 @@ I architect and deploy comprehensive, offline-first software solutions and compl
 | 👑 المشروع | 📄 الوصف | 🛠️ التقنيات |
 | :--- | :--- | :--- |
 | 🧠 **PromptForge AI Pro** | أداة عربية لتحسين الـ prompts بملف واحد، NLP حقيقي، وrephrasing حي متعدد المتغيرات. | `JS`, `Multi-Provider AI` |
-| 🛡️ **Offline Aid Manager** | نظام تنسيق ميداني يعالج قوائم بيانات ضخمة (Excel/CSV) بالكامل من المتصفح. | `JS`, `Offline-API` |
+| 🛡️ **[Offline Aid Manager](https://github.com/Dev-saged/offline-aid-manager)** | نظام تنسيق ميداني يعالج قوائم بيانات ضخمة (Excel/CSV) بالكامل من المتصفح. | `JS`, `Offline-API` |
 | 📱 **AI Prompt Improver** | تطبيق أندرويد يحوّل النص لـ prompt منظّم عبر backend بايثون بلا مكتبات خارجية. | `Python`, `Android` |
 | 🎬 **Lakta Automator** | محرك جدولة ونشر وقص فيديو متعدد المنصات، يعمل عبر بوتات Telegram. | `Python`, `Telegram API` |
 | 🧰 **Adawati Toolkit** | لوحة تجمع أدوات HTML5 مستقلة بتطبيق أندرويد أصلي واحد. | `Web-to-APK`, `Bootstrap` |
