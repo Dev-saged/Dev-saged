@@ -1,10 +1,22 @@
 <div align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=25&pause=1000&color=2196F3&center=true&vCenter=true&width=600&lines=Welcome+To+My+Creative+Space;Mobile-First+Developer;Arabic+AI+%26+Offline+Systems;Tech+Solutions+Integrator" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=25&pause=1000&color=2196F3&center=true&vCenter=true&width=600&lines=Welcome+To+My+Creative+Space;Mobile-First+Developer;Arabic+AI+%26+Offline+Systems;Tech+Solutions+Integrator" alt="Typing SVG" />
 </div>
 
 <div align="center">
   <img src="https://img.shields.io/badge/Sajed_Al--Abadlah-Software_Architect-0052cc?style=for-the-badge&logo=github" alt="Name Badge" />
   <img src="https://img.shields.io/badge/Location-Palestine-2ea44f?style=for-the-badge&logo=google-maps" alt="Location" />
+</div>
+
+<div align="center">
+  <a href="https://instagram.com/sajedd0" target="_blank">
+    <img src="https://img.shields.io/badge/Instagram-sajedd0-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" />
+  </a>
+  <a href="https://facebook.com/sajed.t" target="_blank">
+    <img src="https://img.shields.io/badge/Facebook-sajed.t-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Facebook" />
+  </a>
+  <a href="https://wa.me/972597857250" target="_blank">
+    <img src="https://img.shields.io/badge/WhatsApp-+972_59_785_7250-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp" />
+  </a>
 </div>
 
 <div align="center">
@@ -134,5 +146,9 @@ I architect and deploy comprehensive, offline-first software solutions and compl
 <div align="center">
   <h2>✦ 📊 GitHub Metrics | إحصائياتي ✦</h2>
   <img src="https://github-readme-stats.vercel.app/api?username=Dev-saged&show_icons=true&theme=tokyonight&hide_border=true&title_color=2196F3" height="195" alt="Stats" />
-  <img src="https://streak-stats.demolab.com/?user=Dev-saged&theme=tokyonight&hide_border=true&stroke=0000&title_color=2196F3" height="195" alt="Streak" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Dev-saged&layout=compact&theme=tokyonight&hide_border=true&title_color=2196F3" height="195" alt="Top Languages" />
+  <br>
+  <img src="https://streak-stats.demolab.com/?user=Dev-saged&theme=tokyonight&hide_border=true&stroke=0000&title_color=2196F3" alt="Streak" />
+  <br>
+  <img src="https://github-profile-trophy.vercel.app/?username=Dev-saged&theme=tokyonight&no-frame=true&row=1&column=6" alt="Trophies" />
 </div>
