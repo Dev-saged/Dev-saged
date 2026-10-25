@@ -142,6 +142,11 @@ def text(x, y, s, size, fill=INK, weight=400, anchor="start", family=LAT, extra=
     fam = FAMILY_KEY[family]
     w = snap(fam, weight)
     USED[(fam, w)].update(s)
+    if any(is_arabic(c) for c in s):
+        # right-to-left base direction keeps punctuation and embedded Latin words in the right order;
+        # in RTL, text-anchor start/end swap sides
+        anchor = {"start": "end", "end": "start"}.get(anchor, anchor)
+        extra += ' direction="rtl" unicode-bidi="embed"'
     return (f'<text x="{x}" y="{y}" font-family="{family}" font-size="{size}" font-weight="{w}" '
             f'fill="{fill}" text-anchor="{anchor}" {extra}>{escape(s)}</text>')
 
@@ -318,7 +323,7 @@ def build_headers():
     header("projects", "02 / WORK", "Featured Projects", "Real products, shipped and documented", "أبرز المشاريع", "rocket", *ACCENTS["violet"])
     header("stack", "03 / STACK", "Tech Stack", "Tools I reach for every day", "التقنيات", "layers", *ACCENTS["cyan"])
     header("principles", "04 / CRAFT", "How I Build", "Principles behind every project", "فلسفة العمل", "shield-check", *ACCENTS["green"])
-    header("contact", "05 / CONTACT", "Let's Talk", "Pick the channel you prefer", "تواصل معي", "mail", *ACCENTS["amber"])
+    header("contact", "05 / CONTACT", "Let's Talk", "Open to collaborations on Arabic AI, offline-first and humanitarian tech", "تواصل معي", "mail", *ACCENTS["amber"])
     header("metrics", "06 / LIVE", "GitHub Metrics", "Live from the GitHub API", "إحصائيات", "star", *ACCENTS["rose"])
 
 
@@ -518,6 +523,179 @@ def build_footer():
     write("footer.svg", svg(W, H, b, d, "", "Crafted with love from Palestine"))
 
 
+# ───────────────────────── text-heavy blocks (no plain markdown text, so every word uses the embedded fonts) ─────────────────────────
+def wrap(s, size, weight, family, maxw):
+    lines, cur = [], ""
+    for word in s.split():
+        t = (cur + " " + word).strip()
+        if tw(t, size, weight, family) <= maxw:
+            cur = t
+        else:
+            lines.append(cur)
+            cur = word
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+ABOUT = {
+    "en": dict(title="I'm Sajed.", sub="Software architect · Gaza, Palestine",
+               para="I design, code and ship complete systems entirely from a mobile phone, with no desktop in the loop.",
+               label="MY WORK SITS WHERE THREE THINGS MEET",
+               items=[("sparkles", "Arabic-first AI & automation",
+                       "Tools that turn long videos into Shorts, schedule posts across platforms and answer comments while I sleep.", "violet"),
+                      ("wifi-off", "Offline-first systems for the field",
+                       "Registries and rosters for relief and charity work, where the network is the exception and the data must stay private.", "teal"),
+                      ("smartphone", "Mobile-native delivery",
+                       "Single-file web apps, PWAs and Android builds that run on mid-range phones.", "amber")]),
+    "ar": dict(title="أنا ساجد.", sub="مهندس برمجيات · غزة، فلسطين",
+               para="أصمّم وأبرمج وأطلق أنظمة متكاملة بالكامل من الجوال، بدون حاسوب.",
+               label="عملي يجمع ثلاثة مجالات",
+               items=[("sparkles", "الذكاء الاصطناعي والأتمتة بالعربية أولاً",
+                       "أدوات تحوّل الحلقات الطويلة إلى مقاطع قصيرة، وتجدول المنشورات على المنصات، وترد على التعليقات وأنا نائم.", "violet"),
+                      ("wifi-off", "أنظمة ميدانية تعمل بلا إنترنت",
+                       "كشوف وسجلات للعمل الإغاثي والخيري، حيث الشبكة هي الاستثناء والخصوصية أولوية.", "teal"),
+                      ("smartphone", "تسليم من الجوال وإليه",
+                       "تطبيقات ويب بملف واحد وPWA وحزم أندرويد تعمل على الأجهزة المتوسطة.", "amber")]),
+}
+
+
+def about_panel(x, w, lang, defs_prefix):
+    d = ABOUT[lang]
+    rtl = lang == "ar"
+    fam = ARF if rtl else LAT
+    pad = 30
+    tx = x + w - pad if rtl else x + pad
+    anc = "end" if rtl else "start"
+    inner = w - 2 * pad
+    parts = []
+    y = 74
+    parts.append(text(tx, y, d["title"], 34 if rtl else 32, "url(#" + defs_prefix + "t)", 800, anc, fam))
+    y += 30
+    parts.append(text(tx, y, d["sub"], 15, "#7FB0FF" if not rtl else "#B79CFF", 700, anc, fam))
+    y += 34
+    for line in wrap(d["para"], 15.5, 500, fam, inner * 0.94):
+        parts.append(text(tx, y, line, 15.5, "#D5E0FA", 500, anc, fam))
+        y += 25
+    y += 14
+    parts.append(text(tx, y, d["label"], 13 if rtl else 11.5, MUTED, 700, anc, fam, "" if rtl else 'letter-spacing="1.6"'))
+    y += 24
+    for icon, title, desc, acc in d["items"]:
+        ix = x + w - pad - 42 if rtl else x + pad
+        parts.append(f'<rect x="{ix}" y="{y - 4}" width="42" height="42" rx="13" fill="url(#{defs_prefix}{acc})"/>')
+        parts.append(lu(icon, ix + 10, y + 6, 22, "#FFFFFF"))
+        ttx = x + w - pad - 58 if rtl else x + pad + 58
+        parts.append(text(ttx, y + 14, title, 16, INK, 800, anc, fam))
+        yy = y + 38
+        for line in wrap(desc, 13.5, 500, fam, (inner - 58) * 0.94):
+            parts.append(text(ttx, yy, line, 13.5, "#AFC0E6", 500, anc, fam))
+            yy += 21
+        y = yy + 12
+    return parts, y
+
+
+def build_about():
+    W, gap = 1000, 24
+    pw = (W - gap) / 2
+    defs = "".join(grad(f"a{lang}{k}", *ACCENTS[k]) for lang in ("en", "ar") for k in ("violet", "teal", "amber"))
+    defs += grad("aent", "#FFFFFF", "#8DBBFF", 0, 0, 1, 0) + grad("aart", "#FFFFFF", "#C9B8FF", 0, 0, 1, 0)
+    pe, ye = about_panel(0, pw, "en", "aen")
+    pa, ya = about_panel(pw + gap, pw, "ar", "aar")
+    H = int(max(ye, ya) + 20)
+    defs += f'<clipPath id="cp"><rect width="{pw}" height="{H}" rx="24"/></clipPath>'
+    bg = ""
+    for i, c in enumerate(("#3B82F6", "#8B5CF6")):
+        x = i * (pw + gap)
+        bg += (f'<g transform="translate({x} 0)"><g clip-path="url(#cp)"><rect width="{pw}" height="{H}" fill="{PANEL}"/>'
+               f'<circle cx="{pw - 30 if i == 0 else 30}" cy="0" r="150" fill="{c}" opacity=".12"/><rect width="{pw}" height="5" fill="{c}"/></g>'
+               f'<rect x=".5" y=".5" width="{pw - 1}" height="{H - 1}" rx="24" fill="none" stroke="{EDGE}"/></g>')
+    write("about.svg", svg(W, H, bg + "".join(pe) + "".join(pa), defs, "", "About Sajed Al-Abadlah"))
+
+
+def build_subheaders():
+    items = [("sub-ai", "AI & Automation", "الذكاء والأتمتة", "sparkles", "violet"),
+             ("sub-offline", "Offline-first Systems", "أنظمة تعمل بلا إنترنت", "wifi-off", "teal")]
+    for slug, en, ar, icon, acc in items:
+        c1, c2 = ACCENTS[acc]
+        W, H = 1000, 64
+        d = grad("a", c1, c2) + grad("l", c1, "#0E1630", 0, 0, 1, 0)
+        b = (f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="20" fill="{PANEL2}" stroke="{EDGE}"/>'
+             f'<rect x="12" y="12" width="40" height="40" rx="13" fill="url(#a)"/>{lu(icon, 22, 22, 20, "#FFFFFF")}'
+             f'{text(68, 40, en, 22, INK, 800, extra=LS_TIGHT)}'
+             f'{text(W - 22, 41, ar, 21, c1, 800, "end", ARF)}'
+             f'<rect x="24" y="{H - 4}" width="{W - 48}" height="2.5" rx="1.25" fill="url(#l)" opacity=".85"/>')
+        write(f"{slug}.svg", svg(W, H, b, d, "", en))
+
+
+def build_live_demo():
+    W, H = 560, 64
+    d = grad("a", "#14B8A6", "#10B981") + grad("g", "#0F2B33", "#0E1630", 0, 0, 1, 0)
+    b = (f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="32" fill="url(#g)" stroke="#14B8A6" stroke-opacity=".7"/>'
+         f'<circle cx="34" cy="32" r="22" fill="url(#a)"/>{lu("play", 25, 23, 18, "#FFFFFF", 2.4)}'
+         f'{text(68, 30, "Live demo", 18, INK, 800)}{text(68, 49, "GRCS on GitHub Pages", 12.5, "#7FD9CB", 700)}'
+         f'{text(W - 26, 38, "تجربة مباشرة", 19, "#5EEAD4", 800, "end", ARF)}')
+    write("live-demo.svg", svg(W, H, b, d, "", "Live demo: GRCS on GitHub Pages"))
+
+
+def build_summaries():
+    items = [("sum-repos", "More repositories & experiments", "مستودعات وتجارب أخرى", "folder-git-2", "cyan"),
+             ("sum-closed", "Closed-source tools", "أدوات غير منشورة", "lock", "rose")]
+    for slug, en, ar, icon, acc in items:
+        c1, c2 = ACCENTS[acc]
+        W, H = 1000, 64
+        d = grad("a", c1, c2)
+        b = (f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="20" fill="{PANEL}" stroke="{c1}" stroke-opacity=".55" stroke-dasharray="6 6"/>'
+             f'<rect x="12" y="12" width="40" height="40" rx="13" fill="url(#a)"/>{lu(icon, 22, 22, 20, "#FFFFFF")}'
+             f'{text(68, 40, en, 20, INK, 800, extra=LS_TIGHT)}'
+             f'{text(W - 62, 41, ar, 20, c1, 800, "end", ARF)}'
+             f'<circle cx="{W - 32}" cy="32" r="16" fill="{c1}" fill-opacity=".16"/>{lu("chevron-down", W - 42, 22, 20, c1, 2.4)}')
+        write(f"{slug}.svg", svg(W, H, b, d, "", en))
+
+
+MINI = [
+    ("vyce", "Vyce-Ai", "Vyce-Ai", "cyan", "message-square-text",
+     "Single-file AI chat workspace (v3.0): templates, code runner, diff view, offline-capable."),
+    ("aneera", "aneera", "aneera", "violet", "code-xml",
+     "Native Kotlin + Jetpack Compose + Room rebuild of Anira, at foundation stage with CI-built APKs."),
+    ("bakery", "bakery-pos", "bakery-pos", "amber", "store", "Single-file PWA point-of-sale for bakeries."),
+    ("dukanak", "Dukanak-Bot", "Dukanak-Bot", "blue", "send", "Python bot for the Dukanak app."),
+    ("netsubs", "NetSubsManager", "NetSubsManager", "teal", "wifi", "Android project: network subscriptions manager."),
+    ("promptforge", "PromptForge AI Pro", None, "violet", "wand-sparkles",
+     "Single-file Arabic AI prompt optimizer with real NLP, live multi-variant rephrasing and image-to-prompt extraction."),
+    ("improver", "AI Prompt Improver", None, "rose", "brain",
+     "Android app that rewrites text into structured AI prompts through a dependency-free Python backend."),
+    ("adawati", "Adawati Toolkit", None, "gold", "wrench",
+     "Dashboard that packages independent HTML5 utilities into native Android APKs."),
+    ("audio", "Browser Audio Engine", None, "green", "audio-lines",
+     "Browser-native audio engine with real-time beat matching for live event mixing."),
+]
+
+
+def build_mini_cards():
+    W, H = 480, 140
+    for slug, title, repo, acc, icon, desc in MINI:
+        c1, c2 = ACCENTS[acc]
+        lines = wrap(desc, 13.5, 500, LAT, W - 44 - 8)
+        assert len(lines) <= 2, f"{slug}: description needs {len(lines)} lines"
+        d = grad("a", c1, c2) + grad("p", PANEL2, "#0A1228", 0, 0, 0, 1) + grad("top", c1, c2, 0, 0, 1, 0)
+        d += f'<clipPath id="c"><rect width="{W}" height="{H}" rx="20"/></clipPath>'
+        b = [f'<g clip-path="url(#c)"><rect width="{W}" height="{H}" fill="url(#p)"/><rect width="{W}" height="4" fill="url(#top)"/>'
+             f'<circle cx="{W - 30}" cy="-10" r="110" fill="{c1}" opacity=".10"/></g>',
+             f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="20" fill="none" stroke="{EDGE}"/>',
+             f'<rect x="22" y="22" width="46" height="46" rx="14" fill="url(#a)"/>{lu(icon, 33, 33, 24, "#FFFFFF")}',
+             text(84, 53, title, fit_size(title, 19, W - 84 - 22), INK, 800, extra=LS_TIGHT)]
+        for i, line in enumerate(lines):
+            b.append(text(22, 92 + i * 20, line, 13.5, "#C4D2F5", 500))
+        if repo:
+            b.append(text(22, 128, f"github.com/Dev-saged/{repo}", 11.5, MUTED, 500, family=MONO))
+            b.append(lu("arrow-up-right", W - 36, 116.5, 14, c1, 2.4))
+            b.append(text(W - 40, 128, "Open", 12.5, c1, 700, "end"))
+        else:
+            b.append(lu("lock", 22, 116, 14, MUTED, 2.2))
+            b.append(text(42, 128, "Unpublished · closed source", 11.5, MUTED, 500, family=MONO))
+        write(f"mini/{slug}.svg", svg(W, H + 14, "".join(b), d, "", f"{title}"))
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     build_banner()
@@ -529,6 +707,11 @@ def main():
     build_stack()
     build_principles()
     build_footer()
+    build_about()
+    build_subheaders()
+    build_live_demo()
+    build_summaries()
+    build_mini_cards()
     print("assets generated:", sum(1 for _ in OUT.rglob("*.svg")))
 
 
