@@ -53,24 +53,22 @@ def link(href, inner):
     return f'<a href="{href}">{inner}</a>'
 
 
+GAP = "<br><br>"  # one empty text line; images in the same block sit almost touching
+
+
 def cards(lang, items):
-    out = ['<div align="center">', ""]
-    for slug, title, ar, repo, *_rest in items:
-        desc = _rest[3 if lang == "en" else 4]
-        out.append(link(f"{USER}/{repo}", img(f"{lang}/cards/{slug}.svg", f"{title} — {desc}", 'width="49%"')))
-    out += ["", "</div>"]
-    return "\n".join(out)
+    return [link(f"{USER}/{repo}", img(f"{lang}/cards/{slug}.svg", f"{title} — {rest[3 if lang == 'en' else 4]}", 'width="49%"'))
+            for slug, title, ar, repo, *rest in items]
 
 
-def minis(lang, refs, linked):
-    out = ['<div align="center">', ""]
+def minis(lang, linked):
+    out = []
     for slug, title, repo, acc, icon, d_en, d_ar in A.MINI:
         if (repo is not None) != linked:
             continue
         tag = img(f"{lang}/mini/{slug}.svg", f"{title} — {d_en if lang == 'en' else d_ar}", 'width="49%"')
         out.append(link(f"{USER}/{repo}", tag) if repo else tag)
-    out += ["", "</div>"]
-    return "\n".join(out)
+    return out
 
 
 def contact_row(lang):
@@ -78,50 +76,45 @@ def contact_row(lang):
     for slug, alt, href in (reversed(CONTACT_LINKS) if lang == "ar" else CONTACT_LINKS):
         name = f"contact-{slug}-ar.svg" if lang == "ar" and slug == "whatsapp" else f"contact-{slug}.svg"
         rows.append(link(href, img(name, alt, 'height="52"')))
-    return "\n".join(rows)
+    return rows
 
 
 def section(lang):
     t = TEXT[lang]
     L = lang
     P = A.PROJECTS
-    ai, offline = P[:6], P[6:]
-    parts = [f'<a id="{L}"></a>', "", '<div align="center">', ""]
-    parts += [link(f"#{L}-{slug}", img(f"{L}/nav-{slug}.svg", t["nav_alt"][slug], 'height="40"')) for slug in (("contact", "principles", "stack", "projects") if L == "ar" else ("projects", "stack", "principles", "contact"))]
-    parts += ["", "<br><br>", "", contact_row(L), "", "</div>", "", "<br>", ""]
-    parts += [f'<a id="{L}-about"></a>', img(f"{L}/h-about.svg", t["h_alt"]["about"], 'width="100%"'), "", "<br><br>", "",
-              img(f"{L}/about.svg", t["about_alt"], 'width="100%"'), "", "<br><br>", "",
-              img(f"{L}/stats.svg", t["stats_alt"], 'width="100%"'), "", "<br><br>", ""]
-    parts += [f'<a id="{L}-projects"></a>', img(f"{L}/h-projects.svg", t["h_alt"]["projects"], 'width="100%"'), "", "<br><br>", ""]
-    parts += [img(f"{L}/sub-ai.svg", t["sub_alt"]["ai"], 'width="100%"'), "", "<br>", "", cards(L, ai), "", "<br>", ""]
-    parts += [img(f"{L}/sub-offline.svg", t["sub_alt"]["offline"], 'width="100%"'), "", "<br>", "", cards(L, offline), "", '<div align="center">', "",
-              link("https://dev-saged.github.io/wasla-system/", img(f"{L}/live-demo.svg", t["demo_alt"], 'height="60"')), "", "</div>", "", "<br>", ""]
-    parts += [img(f"{L}/sub-repos.svg", t["sub_alt"]["repos"], 'width="100%"'), "", "<br>", "", minis(L, None, True), "", "<br>", ""]
-    parts += [img(f"{L}/sub-closed.svg", t["sub_alt"]["closed"], 'width="100%"'), "", "<br>", "", minis(L, None, False), "", "<br>", ""]
-    parts += [f'<a id="{L}-stack"></a>', img(f"{L}/h-stack.svg", t["h_alt"]["stack"], 'width="100%"'), "", "<br><br>", "",
-              img(f"{L}/stack.svg", t["stack_alt"], 'width="100%"'), "", "<br><br>", ""]
-    parts += [f'<a id="{L}-principles"></a>', img(f"{L}/h-principles.svg", t["h_alt"]["principles"], 'width="100%"'), "", "<br><br>", "",
-              img(f"{L}/principles.svg", t["principles_alt"], 'width="100%"'), "", "<br><br>", ""]
-    parts += [f'<a id="{L}-contact"></a>', img(f"{L}/h-contact.svg", t["h_alt"]["contact"], 'width="100%"'), "", "<br><br>", "",
-              '<div align="center">', "", contact_row(L), "", "</div>", "", "<br><br>", ""]
-    parts += [img(f"{L}/h-metrics.svg", t["h_alt"]["metrics"], 'width="100%"'), "", "<br>", "", '<div align="center">', "",
-              '<img src="https://github-readme-stats.vercel.app/api?username=Dev-saged&show_icons=true&theme=tokyonight&hide_border=true&title_color=3B82F6&bg_color=0E1630" height="180" alt="GitHub stats">',
-              '<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Dev-saged&layout=compact&theme=tokyonight&hide_border=true&title_color=3B82F6&bg_color=0E1630" height="180" alt="Top languages">',
-              "<br>",
-              '<img src="https://streak-stats.demolab.com/?user=Dev-saged&theme=tokyonight&hide_border=true&stroke=0000&title_color=3B82F6&background=0E1630" alt="Contribution streak">',
-              "", "</div>", "", "<br>", "",
-              img(f"{L}/footer.svg", t["footer_alt"], 'width="100%"'), "", "<br>", "",
-              '<div align="center">', "", link(f"#{t['switch']}", img(f"lang-{t['switch']}.svg", t["switch_alt"], 'width="46%"')), "", "</div>", ""]
-    return "\n".join(parts)
+    h = lambda key: img(f"{L}/h-{key}.svg", t["h_alt"][key], 'width="100%"')
+    sub = lambda key: img(f"{L}/sub-{key}.svg", t["sub_alt"][key], 'width="100%"')
+    order = ("contact", "principles", "stack", "projects") if L == "ar" else ("projects", "stack", "principles", "contact")
+    seq = [f'<a id="{L}"></a>']
+    seq += [link(f"#{L}-{k}", img(f"{L}/nav-{k}.svg", t["nav_alt"][k], 'height="40"')) for k in order]
+    seq += ["<br>"] + contact_row(L) + [GAP]
+    seq += [f'<a id="{L}-about"></a>', h("about"), img(f"{L}/about.svg", t["about_alt"], 'width="100%"'),
+            img(f"{L}/stats.svg", t["stats_alt"], 'width="100%"'), GAP]
+    seq += [f'<a id="{L}-projects"></a>', h("projects"), sub("ai")] + cards(L, P[:6]) + [GAP]
+    seq += [sub("offline")] + cards(L, P[6:])
+    seq += ["<br>", link("https://dev-saged.github.io/wasla-system/", img(f"{L}/live-demo.svg", t["demo_alt"], 'height="60"')), GAP]
+    seq += [sub("repos")] + minis(L, True) + [GAP]
+    seq += [sub("closed")] + minis(L, False) + [GAP]
+    seq += [f'<a id="{L}-stack"></a>', h("stack"), img(f"{L}/stack.svg", t["stack_alt"], 'width="100%"'), GAP]
+    seq += [f'<a id="{L}-principles"></a>', h("principles"), img(f"{L}/principles.svg", t["principles_alt"], 'width="100%"'), GAP]
+    seq += [f'<a id="{L}-contact"></a>', h("contact"), "<br>"] + contact_row(L) + [GAP]
+    seq += [h("metrics"),
+            '<img src="https://github-readme-stats.vercel.app/api?username=Dev-saged&show_icons=true&theme=tokyonight&hide_border=true&title_color=3B82F6&bg_color=0E1630" height="180" alt="GitHub stats">',
+            '<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Dev-saged&layout=compact&theme=tokyonight&hide_border=true&title_color=3B82F6&bg_color=0E1630" height="180" alt="Top languages">',
+            "<br>",
+            '<img src="https://streak-stats.demolab.com/?user=Dev-saged&theme=tokyonight&hide_border=true&stroke=0000&title_color=3B82F6&background=0E1630" alt="Contribution streak">',
+            GAP, img(f"{L}/footer.svg", t["footer_alt"], 'width="100%"'), "<br>",
+            link(f"#{t['switch']}", img(f"lang-{t['switch']}.svg", t["switch_alt"], 'width="46%"'))]
+    return '<div align="center">\n' + "\n".join(seq) + "\n</div>\n"
 
 
 def main():
-    top = ['<div align="center">', "", img("banner.svg", TEXT["en"]["hero_alt"], 'width="100%"'), "", "<br><br>", "",
-           img("lang-title.svg", "Choose your language · اختر لغتك", 'width="100%"'), "", "<br>", "",
+    top = ['<div align="center">', img("banner.svg", TEXT["en"]["hero_alt"], 'width="100%"'), GAP,
+           img("lang-title.svg", "Choose your language · اختر لغتك", 'width="100%"'),
            link("#en", img("lang-en.svg", "English — Read the full profile in English", 'width="46%"')),
-           link("#ar", img("lang-ar.svg", "العربية — اقرأ الملف الكامل بالعربية", 'width="46%"')), "", "</div>", "", "<br><br>", ""]
-    divider = ["<br>", "", "---", "", "<br>", ""]
-    text = "\n".join(top) + section("en") + "\n".join(divider) + section("ar")
+           link("#ar", img("lang-ar.svg", "العربية — اقرأ الملف الكامل بالعربية", 'width="46%"')), GAP, "</div>"]
+    text = "\n".join(top) + "\n\n" + section("en") + "\n---\n\n" + section("ar")
     (ROOT / "README.md").write_text(text.rstrip() + "\n", encoding="utf-8")
     print("README.md written:", len(text.splitlines()), "lines")
 
