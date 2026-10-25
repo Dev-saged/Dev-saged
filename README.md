@@ -1,28 +1,28 @@
 <div align="center">
 
-<img src="assets/banner.svg" alt="Sajed Al-Abadlah — Software Architect from Gaza, Palestine" width="100%">
+<img src="assets/png/banner.png" alt="Sajed Al-Abadlah — Software Architect from Gaza, Palestine" width="100%">
 
 <br>
 
-<a href="#projects"><img src="assets/nav-projects.svg" alt="Projects" height="40"></a>
-<a href="#stack"><img src="assets/nav-stack.svg" alt="Stack" height="40"></a>
-<a href="#principles"><img src="assets/nav-principles.svg" alt="Principles" height="40"></a>
-<a href="#contact"><img src="assets/nav-contact.svg" alt="Contact" height="40"></a>
+<a href="#projects"><img src="assets/png/nav-projects.png" alt="Projects" height="40"></a>
+<a href="#stack"><img src="assets/png/nav-stack.png" alt="Stack" height="40"></a>
+<a href="#principles"><img src="assets/png/nav-principles.png" alt="Principles" height="40"></a>
+<a href="#contact"><img src="assets/png/nav-contact.png" alt="Contact" height="40"></a>
 
 <br><br>
 
-<a href="https://instagram.com/sajedd.0"><img src="assets/contact-instagram.svg" alt="Instagram @sajedd.0" height="52"></a>
-<a href="https://facebook.com/saged.t"><img src="assets/contact-facebook.svg" alt="Facebook saged.t" height="52"></a>
-<a href="https://wa.me/972597857250"><img src="assets/contact-whatsapp.svg" alt="WhatsApp" height="52"></a>
-<a href="https://x.com/saged_al"><img src="assets/contact-x.svg" alt="X @saged_al" height="52"></a>
-<a href="https://github.com/Dev-saged"><img src="assets/contact-github.svg" alt="GitHub @Dev-saged" height="52"></a>
+<a href="https://instagram.com/sajedd.0"><img src="assets/png/contact-instagram.png" alt="Instagram @sajedd.0" height="52"></a>
+<a href="https://facebook.com/saged.t"><img src="assets/png/contact-facebook.png" alt="Facebook saged.t" height="52"></a>
+<a href="https://wa.me/972597857250"><img src="assets/png/contact-whatsapp.png" alt="WhatsApp" height="52"></a>
+<a href="https://x.com/saged_al"><img src="assets/png/contact-x.png" alt="X @saged_al" height="52"></a>
+<a href="https://github.com/Dev-saged"><img src="assets/png/contact-github.png" alt="GitHub @Dev-saged" height="52"></a>
 
 </div>
 
 <br>
 
 <a id="about"></a>
-<img src="assets/h-about.svg" alt="About · نبذة" width="100%">
+<img src="assets/png/h-about.png" alt="About · نبذة" width="100%">
 
 <br>
 
@@ -53,12 +53,12 @@ My work sits where three things meet:
 </tr>
 </table>
 
-<img src="assets/stats.svg" alt="12 featured projects · 6 offline-first systems · Arabic and English interfaces · built on a phone" width="100%">
+<img src="assets/png/stats.png" alt="12 featured projects · 6 offline-first systems · Arabic and English interfaces · built on a phone" width="100%">
 
 <br><br>
 
 <a id="projects"></a>
-<img src="assets/h-projects.svg" alt="Featured Projects · أبرز المشاريع" width="100%">
+<img src="assets/png/h-projects.png" alt="Featured Projects · أبرز المشاريع" width="100%">
 
 <br>
 
@@ -66,12 +66,12 @@ My work sits where three things meet:
 
 <div align="center">
 
-<a href="https://github.com/Dev-saged/Lakta-Studio-AI"><img src="assets/cards/lakta.svg" alt="Lakta Studio AI" width="49%"></a>
-<a href="https://github.com/Dev-saged/sawan-kids-story-studio"><img src="assets/cards/sawan.svg" alt="Sawan Kids Story Studio" width="49%"></a>
-<a href="https://github.com/Dev-saged/social-manager"><img src="assets/cards/social.svg" alt="Social Manager" width="49%"></a>
-<a href="https://github.com/Dev-saged/bulldozer-social"><img src="assets/cards/bulldozer.svg" alt="Bulldozer Social" width="49%"></a>
-<a href="https://github.com/Dev-saged/release-manager-pro"><img src="assets/cards/release.svg" alt="Release Manager Pro" width="49%"></a>
-<a href="https://github.com/Dev-saged/local-sms-parser"><img src="assets/cards/sms.svg" alt="Local SMS Parser" width="49%"></a>
+<a href="https://github.com/Dev-saged/Lakta-Studio-AI"><img src="assets/png/cards/lakta.png" alt="Lakta Studio AI" width="49%"></a>
+<a href="https://github.com/Dev-saged/sawan-kids-story-studio"><img src="assets/png/cards/sawan.png" alt="Sawan Kids Story Studio" width="49%"></a>
+<a href="https://github.com/Dev-saged/social-manager"><img src="assets/png/cards/social.png" alt="Social Manager" width="49%"></a>
+<a href="https://github.com/Dev-saged/bulldozer-social"><img src="assets/png/cards/bulldozer.png" alt="Bulldozer Social" width="49%"></a>
+<a href="https://github.com/Dev-saged/release-manager-pro"><img src="assets/png/cards/release.png" alt="Release Manager Pro" width="49%"></a>
+<a href="https://github.com/Dev-saged/local-sms-parser"><img src="assets/png/cards/sms.png" alt="Local SMS Parser" width="49%"></a>
 
 </div>
 
@@ -79,12 +79,12 @@ My work sits where three things meet:
 
 <div align="center">
 
-<a href="https://github.com/Dev-saged/wasla-system"><img src="assets/cards/grcs.svg" alt="Gaza Refugee Camps System" width="49%"></a>
-<a href="https://github.com/Dev-saged/ghiras-alkhair"><img src="assets/cards/ghiras.svg" alt="Ghiras Al-Khair" width="49%"></a>
-<a href="https://github.com/Dev-saged/Mushajjir"><img src="assets/cards/mushajjir.svg" alt="Mushajjir" width="49%"></a>
-<a href="https://github.com/Dev-saged/offline-aid-manager"><img src="assets/cards/aid.svg" alt="Offline Aid Manager" width="49%"></a>
-<a href="https://github.com/Dev-saged/Anabat"><img src="assets/cards/anira.svg" alt="Anira" width="49%"></a>
-<a href="https://github.com/Dev-saged/daftar"><img src="assets/cards/daftar.svg" alt="Daftar" width="49%"></a>
+<a href="https://github.com/Dev-saged/wasla-system"><img src="assets/png/cards/grcs.png" alt="Gaza Refugee Camps System" width="49%"></a>
+<a href="https://github.com/Dev-saged/ghiras-alkhair"><img src="assets/png/cards/ghiras.png" alt="Ghiras Al-Khair" width="49%"></a>
+<a href="https://github.com/Dev-saged/Mushajjir"><img src="assets/png/cards/mushajjir.png" alt="Mushajjir" width="49%"></a>
+<a href="https://github.com/Dev-saged/offline-aid-manager"><img src="assets/png/cards/aid.png" alt="Offline Aid Manager" width="49%"></a>
+<a href="https://github.com/Dev-saged/Anabat"><img src="assets/png/cards/anira.png" alt="Anira" width="49%"></a>
+<a href="https://github.com/Dev-saged/daftar"><img src="assets/png/cards/daftar.png" alt="Daftar" width="49%"></a>
 
 </div>
 
@@ -126,35 +126,35 @@ My work sits where three things meet:
 <br>
 
 <a id="stack"></a>
-<img src="assets/h-stack.svg" alt="Tech Stack · التقنيات" width="100%">
+<img src="assets/png/h-stack.png" alt="Tech Stack · التقنيات" width="100%">
 
 <br>
 
-<img src="assets/stack.svg" alt="JavaScript, TypeScript, Python, Kotlin, Java, HTML5, CSS, React, Vite, Tailwind, Flask, Node.js, Express, Gemini, Claude, Telegram, GitHub API, Android, PWA, Firebase, Cloudflare, GitHub Actions, FFmpeg, SQLite, PostgreSQL, Temporal, Docker" width="100%">
+<img src="assets/png/stack.png" alt="JavaScript, TypeScript, Python, Kotlin, Java, HTML5, CSS, React, Vite, Tailwind, Flask, Node.js, Express, Gemini, Claude, Telegram, GitHub API, Android, PWA, Firebase, Cloudflare, GitHub Actions, FFmpeg, SQLite, PostgreSQL, Temporal, Docker" width="100%">
 
 <br><br>
 
 <a id="principles"></a>
-<img src="assets/h-principles.svg" alt="How I Build · فلسفة العمل" width="100%">
+<img src="assets/png/h-principles.png" alt="How I Build · فلسفة العمل" width="100%">
 
 <br>
 
-<img src="assets/principles.svg" alt="Offline-first, private by design, Arabic-native, tested and honest" width="100%">
+<img src="assets/png/principles.png" alt="Offline-first, private by design, Arabic-native, tested and honest" width="100%">
 
 <br><br>
 
 <a id="contact"></a>
-<img src="assets/h-contact.svg" alt="Let's Talk · تواصل معي" width="100%">
+<img src="assets/png/h-contact.png" alt="Let's Talk · تواصل معي" width="100%">
 
 <br>
 
 <div align="center">
 
-<a href="https://instagram.com/sajedd.0"><img src="assets/contact-instagram.svg" alt="Instagram @sajedd.0" height="52"></a>
-<a href="https://facebook.com/saged.t"><img src="assets/contact-facebook.svg" alt="Facebook saged.t" height="52"></a>
-<a href="https://wa.me/972597857250"><img src="assets/contact-whatsapp.svg" alt="WhatsApp" height="52"></a>
-<a href="https://x.com/saged_al"><img src="assets/contact-x.svg" alt="X @saged_al" height="52"></a>
-<a href="https://github.com/Dev-saged"><img src="assets/contact-github.svg" alt="GitHub @Dev-saged" height="52"></a>
+<a href="https://instagram.com/sajedd.0"><img src="assets/png/contact-instagram.png" alt="Instagram @sajedd.0" height="52"></a>
+<a href="https://facebook.com/saged.t"><img src="assets/png/contact-facebook.png" alt="Facebook saged.t" height="52"></a>
+<a href="https://wa.me/972597857250"><img src="assets/png/contact-whatsapp.png" alt="WhatsApp" height="52"></a>
+<a href="https://x.com/saged_al"><img src="assets/png/contact-x.png" alt="X @saged_al" height="52"></a>
+<a href="https://github.com/Dev-saged"><img src="assets/png/contact-github.png" alt="GitHub @Dev-saged" height="52"></a>
 
 <sub>Open to collaborations on Arabic AI tools, offline-first apps and humanitarian tech. &nbsp;·&nbsp; منفتح على التعاون في أدوات الذكاء الاصطناعي العربية والتطبيقات الميدانية.</sub>
 
@@ -162,7 +162,7 @@ My work sits where three things meet:
 
 <br><br>
 
-<img src="assets/h-metrics.svg" alt="GitHub Metrics · إحصائيات" width="100%">
+<img src="assets/png/h-metrics.png" alt="GitHub Metrics · إحصائيات" width="100%">
 
 <br>
 
@@ -177,4 +177,4 @@ My work sits where three things meet:
 
 <br>
 
-<img src="assets/footer.svg" alt="Crafted with love from Palestine · Gaza" width="100%">
+<img src="assets/png/footer.png" alt="Crafted with love from Palestine · Gaza" width="100%">
