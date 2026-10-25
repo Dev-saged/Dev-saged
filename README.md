@@ -77,8 +77,7 @@
 
 <br>
 
-<details>
-<summary><img src="assets/sum-repos.svg" alt="More repositories and experiments · مستودعات وتجارب أخرى" width="97%"></summary>
+<img src="assets/sub-repos.svg" alt="More Repositories and Experiments · مستودعات وتجارب أخرى" width="100%">
 
 <br>
 
@@ -92,10 +91,9 @@
 
 </div>
 
-</details>
+<br>
 
-<details>
-<summary><img src="assets/sum-closed.svg" alt="Closed-source tools · أدوات غير منشورة" width="97%"></summary>
+<img src="assets/sub-closed.svg" alt="Closed-source Tools · أدوات غير منشورة" width="100%">
 
 <br>
 
@@ -107,8 +105,6 @@
 <img src="assets/mini/audio.svg" alt="Browser Audio Engine" width="49%">
 
 </div>
-
-</details>
 
 <br>
 

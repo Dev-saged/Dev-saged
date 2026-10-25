@@ -614,7 +614,9 @@ def build_about():
 
 def build_subheaders():
     items = [("sub-ai", "AI & Automation", "الذكاء والأتمتة", "sparkles", "violet"),
-             ("sub-offline", "Offline-first Systems", "أنظمة تعمل بلا إنترنت", "wifi-off", "teal")]
+             ("sub-offline", "Offline-first Systems", "أنظمة تعمل بلا إنترنت", "wifi-off", "teal"),
+             ("sub-repos", "More Repositories & Experiments", "مستودعات وتجارب أخرى", "folder-git-2", "cyan"),
+             ("sub-closed", "Closed-source Tools", "أدوات غير منشورة", "lock", "rose")]
     for slug, en, ar, icon, acc in items:
         c1, c2 = ACCENTS[acc]
         W, H = 1000, 64
@@ -637,21 +639,6 @@ def build_live_demo():
     write("live-demo.svg", svg(W, H, b, d, "", "Live demo: GRCS on GitHub Pages"))
 
 
-def build_summaries():
-    items = [("sum-repos", "More repositories & experiments", "مستودعات وتجارب أخرى", "folder-git-2", "cyan"),
-             ("sum-closed", "Closed-source tools", "أدوات غير منشورة", "lock", "rose")]
-    for slug, en, ar, icon, acc in items:
-        c1, c2 = ACCENTS[acc]
-        W, H = 1000, 64
-        d = grad("a", c1, c2)
-        b = (f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="20" fill="{PANEL}" stroke="{c1}" stroke-opacity=".55" stroke-dasharray="6 6"/>'
-             f'<rect x="12" y="12" width="40" height="40" rx="13" fill="url(#a)"/>{lu(icon, 22, 22, 20, "#FFFFFF")}'
-             f'{text(68, 40, en, 20, INK, 800, extra=LS_TIGHT)}'
-             f'{text(W - 62, 41, ar, 20, c1, 800, "end", ARF)}'
-             f'<circle cx="{W - 32}" cy="32" r="16" fill="{c1}" fill-opacity=".16"/>{lu("chevron-down", W - 42, 22, 20, c1, 2.4)}')
-        write(f"{slug}.svg", svg(W, H, b, d, "", en))
-
-
 MINI = [
     ("vyce", "Vyce-Ai", "Vyce-Ai", "cyan", "message-square-text",
      "Single-file AI chat workspace (v3.0): templates, code runner, diff view, offline-capable."),
@@ -672,7 +659,7 @@ MINI = [
 
 
 def build_mini_cards():
-    W, H = 480, 140
+    W, H = 480, 160
     for slug, title, repo, acc, icon, desc in MINI:
         c1, c2 = ACCENTS[acc]
         lines = wrap(desc, 13.5, 500, LAT, W - 44 - 8)
@@ -686,13 +673,14 @@ def build_mini_cards():
              text(84, 53, title, fit_size(title, 19, W - 84 - 22), INK, 800, extra=LS_TIGHT)]
         for i, line in enumerate(lines):
             b.append(text(22, 92 + i * 20, line, 13.5, "#C4D2F5", 500))
+        b.append(f'<line x1="22" y1="124" x2="{W - 22}" y2="124" stroke="#1D2B55"/>')
         if repo:
-            b.append(text(22, 128, f"github.com/Dev-saged/{repo}", 11.5, MUTED, 500, family=MONO))
-            b.append(lu("arrow-up-right", W - 36, 116.5, 14, c1, 2.4))
-            b.append(text(W - 40, 128, "Open", 12.5, c1, 700, "end"))
+            b.append(text(22, 147, f"github.com/Dev-saged/{repo}", 11.5, MUTED, 500, family=MONO))
+            b.append(lu("arrow-up-right", W - 36, 135.5, 14, c1, 2.4))
+            b.append(text(W - 40, 147, "Open", 12.5, c1, 700, "end"))
         else:
-            b.append(lu("lock", 22, 116, 14, MUTED, 2.2))
-            b.append(text(42, 128, "Unpublished · closed source", 11.5, MUTED, 500, family=MONO))
+            b.append(lu("lock", 22, 135, 14, MUTED, 2.2))
+            b.append(text(42, 147, "Unpublished · closed source", 11.5, MUTED, 500, family=MONO))
         write(f"mini/{slug}.svg", svg(W, H + 14, "".join(b), d, "", f"{title}"))
 
 
@@ -710,7 +698,6 @@ def main():
     build_about()
     build_subheaders()
     build_live_demo()
-    build_summaries()
     build_mini_cards()
     print("assets generated:", sum(1 for _ in OUT.rglob("*.svg")))
 
