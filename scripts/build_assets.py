@@ -5,6 +5,7 @@ import base64
 import io
 import json
 import pathlib
+import re
 from collections import defaultdict
 from html import escape
 
@@ -141,6 +142,8 @@ def lu(name, x, y, size, color, sw=2):
 def text(x, y, s, size, fill=INK, weight=400, anchor="start", family=LAT, extra=""):
     fam = FAMILY_KEY[family]
     w = snap(fam, weight)
+    if any(is_arabic(c) for c in s):
+        s = re.sub(r"(?<![\u0600-\u06FF])و(?=[A-Za-z0-9])", "و ", s)  # a lone waw glued to Latin text reads like a "g"
     USED[(fam, w)].update(s)
     if any(is_arabic(c) for c in s):
         # right-to-left base direction keeps punctuation and embedded Latin words in the right order;
@@ -264,266 +267,33 @@ def build_banner():
     write("banner.svg", svg(W, H, "".join(b), defs, style, "Sajed Al-Abadlah — Software Architect"))
 
 
-# ───────────────────────── nav + contact ─────────────────────────
-def build_nav():
-    items = [("projects", "Projects", "rocket", "#8B5CF6"), ("stack", "Stack", "layers", "#06B6D4"),
-             ("principles", "Principles", "shield-check", "#22C55E"), ("contact", "Contact", "mail", "#F59E0B")]
-    for slug, label, icon, c in items:
-        w = 44 + tw(label, 15, 600) + 20
-        w = int(w)
-        body = (f'<rect x=".5" y=".5" width="{w - 1}" height="42" rx="21" fill="{PANEL}" stroke="{c}" stroke-opacity=".55"/>'
-                f'{lu(icon, 16, 11, 20, c)}{text(44, 27.5, label, 15, INK, 600)}')
-        write(f"nav-{slug}.svg", svg(w, 44, body, "", "", label))
+# ───────────────────────── language helpers ─────────────────────────
+# Every visual exists twice: assets/en and assets/ar. Arabic versions are mirrored (RTL).
+LANGS = ("en", "ar")
 
 
-CONTACTS = [
-    ("instagram", "Instagram", "@sajedd.0", "https://instagram.com/sajedd.0", ("#F58529", "#DD2A7B", "#8134AF")),
-    ("facebook", "Facebook", "saged.t", "https://facebook.com/saged.t", ("#1877F2", "#1877F2", "#1877F2")),
-    ("whatsapp", "WhatsApp", "Message me", "https://wa.me/972597857250", ("#25D366", "#25D366", "#25D366")),
-    ("x", "X", "@saged_al", "https://x.com/saged_al", ("#2B2F3A", "#2B2F3A", "#2B2F3A")),
-    ("github", "GitHub", "@Dev-saged", "https://github.com/Dev-saged", ("#30363D", "#30363D", "#30363D")),
-]
+def fam_of(lang):
+    return ARF if lang == "ar" else LAT
 
 
-def build_contact():
-    for slug, name, handle, _, cols in CONTACTS:
-        w, h = 188, 60
-        d = (f'<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{cols[0]}"/>'
-             f'<stop offset=".55" stop-color="{cols[1]}"/><stop offset="1" stop-color="{cols[2]}"/></linearGradient>'
-             + grad("e", EDGE, cols[1] if slug not in ("x", "github") else "#4A5A8C", 0, 0, 1, 1))
-        body = (f'<rect x=".5" y=".5" width="{w - 1}" height="{h - 1}" rx="18" fill="{PANEL}" stroke="url(#e)"/>'
-                f'<rect x="9" y="9" width="42" height="42" rx="13" fill="url(#g)"/>'
-                f'{brand(slug, 18, 18, 24, "#FFFFFF")}'
-                f'{text(62, 28, name, 16, INK, 700)}{text(62, 46, handle, 12.5, MUTED, 500)}')
-        write(f"contact-{slug}.svg", svg(w, h, body, d, "", name))
+def anc(lang):
+    return "end" if lang == "ar" else "start"
 
 
-# ───────────────────────── section headers ─────────────────────────
-def header(slug, num, en, sub, ar, icon, c1, c2):
-    W, H = 1000, 100
-    d = grad("a", c1, c2) + grad("l", c1, c2, 0, 0, 1, 0) + grad("pn", PANEL2, "#0A1228", 0, 0, 1, 0)
-    d += f'<clipPath id="cp"><rect width="{W}" height="{H}" rx="24"/></clipPath>'
-    style = ("@keyframes slide{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-260}}"
-             ".run{stroke-dasharray:90 170;animation:slide 4s linear infinite}")
-    b = (f'<g clip-path="url(#cp)"><rect width="{W}" height="{H}" fill="url(#pn)"/>'
-         f'<circle cx="{W - 40}" cy="0" r="130" fill="{c1}" opacity=".10"/>'
-         f'<line x1="0" y1="97" x2="{W}" y2="97" stroke="#1D2B55" stroke-width="6"/>'
-         f'<line class="run" x1="0" y1="97" x2="{W}" y2="97" stroke="url(#l)" stroke-width="6"/></g>'
-         f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="24" fill="none" stroke="{EDGE}"/>'
-         f'<rect x="22" y="20" width="56" height="56" rx="17" fill="url(#a)"/>{lu(icon, 35, 33, 30, "#FFFFFF", 2)}'
-         f'{text(98, 46, en, 30, INK, 800, extra=LS_TIGHT)}'
-         f'{text(99, 70, sub, 14, MUTED, 500)}'
-         f'{text(W - 26, 46, ar, 28, c1, 800, "end", ARF)}'
-         f'{text(W - 26, 70, num, 12.5, MUTED, 700, "end", MONO, LS_WIDE)}')
-    write(f"h-{slug}.svg", svg(W, H, b, d, style, en))
+def edge(lang, x, w=0, W=1000):
+    """Left edge of an element of width w that sits x away from the reading start."""
+    return W - x - w if lang == "ar" else x
 
 
-def build_headers():
-    header("about", "01 / ABOUT", "About", "Who I am and how I build", "نبذة", "user", *ACCENTS["blue"])
-    header("projects", "02 / WORK", "Featured Projects", "Real products, shipped and documented", "أبرز المشاريع", "rocket", *ACCENTS["violet"])
-    header("stack", "03 / STACK", "Tech Stack", "Tools I reach for every day", "التقنيات", "layers", *ACCENTS["cyan"])
-    header("principles", "04 / CRAFT", "How I Build", "Principles behind every project", "فلسفة العمل", "shield-check", *ACCENTS["green"])
-    header("contact", "05 / CONTACT", "Let's Talk", "Open to collaborations on Arabic AI, offline-first and humanitarian tech", "تواصل معي", "mail", *ACCENTS["amber"])
-    header("metrics", "06 / LIVE", "GitHub Metrics", "Live from the GitHub API", "إحصائيات", "star", *ACCENTS["rose"])
+def pos(lang, x, W=1000):
+    """x coordinate measured from the reading start (right edge in Arabic)."""
+    return W - x if lang == "ar" else x
 
 
-# ───────────────────────── stats strip ─────────────────────────
-def build_stats():
-    W, H = 1000, 150
-    tiles = [("12", "Featured projects", "مشروعاً مميزاً", "boxes", "#8B5CF6"),
-             ("6", "Offline-first systems", "أنظمة تعمل بلا إنترنت", "wifi-off", "#14B8A6"),
-             ("AR · EN", "Bilingual interfaces", "واجهات ثنائية اللغة", "languages", "#3B82F6"),
-             ("100%", "Built on a phone", "مبنية من الجوال", "smartphone", "#F59E0B")]
-    gap = 20
-    tile = (W - 3 * gap) / 4
-    d = "".join(grad(f"t{i}", c, "#FFFFFF", 0, 0, 1, 1) for i, (*_, c) in enumerate(tiles))
-    d += f'<clipPath id="ct"><rect width="{tile}" height="{H}" rx="22"/></clipPath>'
-    b = []
-    for i, (val, en, ar, icon, c) in enumerate(tiles):
-        x = i * (tile + gap)
-        b.append(f'<g transform="translate({x} 0)"><g clip-path="url(#ct)"><rect width="{tile}" height="{H}" fill="{PANEL}"/>'
-                 f'<rect width="{tile}" height="6" fill="{c}"/></g>'
-                 f'<rect x=".5" y=".5" width="{tile - 1}" height="{H - 1}" rx="22" fill="none" stroke="{EDGE}"/>'
-                 f'{lu(icon, tile - 48, 26, 26, c)}'
-                 f'{text(24, 82, val, 44, "url(#t%d)" % i, 800, extra=LS_TIGHT1)}'
-                 f'{text(24, 112, en, 14, INK, 600)}{text(24, 134, ar, 13.5, MUTED, 500, family=ARF)}</g>')
-    write("stats.svg", svg(W, H, "".join(b), d, "", "Highlights"))
+def fit_size(s, size, avail, weight=800, family=LAT):
+    return round(min(size, size * avail / tw(s, size, weight, family)), 1)
 
 
-# ───────────────────────── project cards ─────────────────────────
-PROJECTS = [
-    # slug, title, ar, repo, accent, icon, tag, l1, l2, chips, featured
-    ("lakta", "Lakta Studio AI", "استوديو لقطة", "Lakta-Studio-AI", "violet", "video", "v34.15",
-     "Turns long episodes into ready Shorts & Reels:", "AI picks moments, edits, adds Arabic captions.",
-     [("b", "python", "Python"), ("b", "ffmpeg", "FFmpeg"), ("b", "googlegemini", "Gemini"), ("b", "telegram", "Telegram")], True),
-    ("sawan", "Sawan Kids Story Studio", "استوديو ساجد للقصص", "sawan-kids-story-studio", "amber", "book-open", "v3.4",
-     "One idea in, an illustrated, narrated kids' story", "out, in Arabic or English. Offline-ready PWA.",
-     [("b", "react", "React"), ("b", "typescript", "TypeScript"), ("b", "googlegemini", "Gemini"), ("b", "pwa", "PWA")], True),
-    ("social", "Social Manager", "مدير حساباتي", "social-manager", "rose", "share-2", "",
-     "Write once, publish to 7 platforms on schedule", "and auto-reply to comments. Runs on your phone.",
-     [("b", "flask", "Flask"), ("b", "sqlite", "SQLite"), ("b", "android", "Android"), ("b", "googlegemini", "Gemini")], False),
-    ("bulldozer", "Bulldozer Social", "بلدوزر سوشيل", "bulldozer-social", "gold", "megaphone", "AGPL-3.0",
-     "Postiz fork for scheduling, with a built-in", "comment-to-DM auto-reply engine for Instagram.",
-     [("b", "typescript", "TypeScript"), ("b", "temporal", "Temporal"), ("b", "instagram", "Instagram")], False),
-    ("release", "Release Manager Pro", "مدير الإصدارات الذكي", "release-manager-pro", "cyan", "git-pull-request", "v2.6",
-     "Diffs your code, lets Gemini write the release", "notes, then ships to GitHub in one tap.",
-     [("b", "javascript", "JavaScript"), ("b", "googlegemini", "Gemini"), ("b", "github", "GitHub"), ("b", "android", "Android")], False),
-    ("sms", "Local SMS Parser", "معالج رسائل SMS", "local-sms-parser", "blue", "message-square-text", "",
-     "Turns Excel rosters into personalised SMS", "batches. 100% in-browser, nothing uploaded.",
-     [("b", "javascript", "JavaScript"), ("b", "html5", "HTML5"), ("b", "css", "CSS")], False),
-    ("grcs", "Gaza Refugee Camps System", "منظومة مخيمات النزوح", "wasla-system", "teal", "tent", "v3.0",
-     "Offline-first registry for displacement camps,", "live sync across devices. Android + PWA.",
-     [("b", "javascript", "JavaScript"), ("b", "firebase", "Firestore"), ("b", "cloudflare", "Workers"), ("b", "pwa", "PWA")], True),
-    ("ghiras", "Ghiras Al-Khair", "غراس الخير", "ghiras-alkhair", "green", "heart-handshake", "",
-     "Orphan-care management for charities: files,", "sponsorships, reports, roles, encrypted data.",
-     [("b", "html5", "HTML5"), ("b", "javascript", "JavaScript"), ("b", "openjdk", "Java"), ("b", "android", "Android")], False),
-    ("mushajjir", "Mushajjir", "مُشَجِّر · شجرة العائلة", "Mushajjir", "crimson", "network", "v1.2",
-     "Arabic family-tree builder: 3 layouts, 8 export", "formats, 4,000+ people at 60fps, 56 self-tests.",
-     [("b", "javascript", "JavaScript"), ("b", "android", "Android"), ("l", "test-tube-diagonal", "56 tests")], False),
-    ("aid", "Offline Aid Manager", "نظام إدارة الإغاثة", "offline-aid-manager", "blue", "package-open", "",
-     "Beneficiary roster manager for field relief", "work. CSV in/out, data never leaves the device.",
-     [("b", "javascript", "JavaScript"), ("b", "html5", "HTML5"), ("b", "css", "CSS")], False),
-    ("anira", "Anira", "أنيرا · تسجيل الإنابات", "Anabat", "violet", "clipboard-list", "v1.4",
-     "Humanitarian proxy registration with duplicate", "detection, Excel/PDF export, Telegram backup.",
-     [("b", "javascript", "JavaScript"), ("b", "telegram", "Telegram"), ("b", "android", "Android")], False),
-    ("daftar", "Daftar", "دفتر · إدارة الديون", "daftar", "amber", "notebook-pen", "v1.0",
-     "Debt ledger for three shop branches: offline,", "Firebase sync, 80mm thermal receipts.",
-     [("b", "javascript", "JavaScript"), ("b", "firebase", "Firebase"), ("b", "android", "Android")], False),
-]
-
-
-def fit_size(s, size, avail, weight=800):
-    return round(min(size, size * avail / tw(s, size, weight)), 1)
-
-
-def build_cards():
-    W, H = 480, 222
-    for slug, title, ar, repo, acc, icon, tag, l1, l2, chips, featured in PROJECTS:
-        c1, c2 = ACCENTS[acc]
-        for line in (l1, l2):
-            assert tw(line, 14, 500) <= W - 44, f"{slug}: line too wide: {line}"
-        d = grad("a", c1, c2) + grad("p", PANEL2, "#0A1228", 0, 0, 0, 1) + grad("top", c1, c2, 0, 0, 1, 0)
-        style = ("@keyframes shine{0%{transform:translateX(-520px)}100%{transform:translateX(520px)}}"
-                 ".sh{animation:shine 6s ease-in-out infinite}")
-        b = [f'<clipPath id="c"><rect width="{W}" height="{H}" rx="20"/></clipPath>',
-             f'<g clip-path="url(#c)"><rect width="{W}" height="{H}" fill="url(#p)"/>',
-             f'<rect width="{W}" height="4" fill="url(#top)"/>',
-             f'<circle cx="{W - 30}" cy="-10" r="120" fill="{c1}" opacity=".10"/>',
-             f'<rect class="sh" x="0" y="0" width="90" height="{H}" fill="#FFFFFF" opacity=".035" transform="skewX(-18)"/></g>',
-             f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="20" fill="none" stroke="{EDGE}"/>',
-             f'<rect x="22" y="24" width="56" height="56" rx="16" fill="url(#a)"/>',
-             lu(icon, 36, 38, 28, "#FFFFFF"),
-             text(94, 44, title, fit_size(title, 20, W - 22 - 94 - (tw(tag, 12, 700, MONO) + 34 if tag else 0)), INK, 800, extra='letter-spacing="-0.3"'),
-             text(94, 68, ar, 15, c1, 600, family=ARF)]
-        right = W - 22
-        if tag:
-            tww = int(tw(tag, 12, 700, MONO) + 22)
-            b.append(f'<rect x="{right - tww}" y="14" width="{tww}" height="22" rx="11" fill="{c1}" fill-opacity=".16" stroke="{c1}" stroke-opacity=".6"/>')
-            b.append(text(right - tww / 2, 29.5, tag, 12, INK, 700, "middle", MONO))
-        if featured:
-            b.append(lu("star", right - 18, 192, 16, "#FACC15"))
-        b.append(text(22, 108, l1, 14, "#C4D2F5", 500))
-        b.append(text(22, 128, l2, 14, "#C4D2F5", 500))
-        b.append(f'<line x1="22" y1="146" x2="{W - 22}" y2="146" stroke="#1D2B55"/>')
-        cx = 22
-        for kind, key, label in chips:
-            cw = int(22 + 18 + tw(label, 12.5, 600) + 6)
-            if cx + cw > W - 22:
-                break
-            b.append(f'<rect x="{cx}" y="158" width="{cw}" height="28" rx="14" fill="#0A1230" stroke="{EDGE}"/>')
-            b.append(brand(key, cx + 10, 165, 14) if kind == "b" else lu(key, cx + 10, 165, 14, "#34D399"))
-            b.append(text(cx + 30, 176.5, label, 12.5, INK, 600))
-            cx += cw + 8
-        b.append(text(22, 208, f"github.com/Dev-saged/{repo}", 11.5, MUTED, 500, family=MONO))
-        ox = right - (22 if featured else 0)
-        b.append(lu("arrow-up-right", ox - 14, 196.5, 14, c1, 2.4))
-        b.append(text(ox - 18, 208, "Open", 12.5, c1, 700, "end"))
-        write(f"cards/{slug}.svg", svg(W, H + 14, "".join(b), d, style, f"{title} — {ar}"))
-
-
-# ───────────────────────── stack ─────────────────────────
-STACK = [
-    ("Languages", "اللغات", [("javascript", "JavaScript"), ("typescript", "TypeScript"), ("python", "Python"), ("kotlin", "Kotlin"),
-                             ("html5", "HTML5"), ("css", "CSS")]),
-    ("Frameworks & runtime", "الأطر", [("react", "React"), ("vite", "Vite"), ("tailwindcss", "Tailwind"), ("flask", "Flask"),
-                                       ("nodedotjs", "Node.js"), ("express", "Express")]),
-    ("AI & APIs", "الذكاء والواجهات", [("googlegemini", "Gemini"), ("claude", "Claude"), ("anthropic", "Anthropic API"),
-                                        ("telegram", "Telegram Bot"), ("github", "GitHub API")]),
-    ("Platform & data", "المنصات والبيانات", [("android", "Android"), ("pwa", "PWA"), ("firebase", "Firebase"), ("cloudflare", "Cloudflare"),
-                                              ("githubactions", "Actions"), ("ffmpeg", "FFmpeg"), ("sqlite", "SQLite"),
-                                              ("postgresql", "PostgreSQL"), ("temporal", "Temporal"), ("docker", "Docker")]),
-]
-
-
-def build_stack():
-    W = 1000
-    y = 0
-    b = []
-    for en, ar, items in STACK:
-        # layout chips
-        x0, x, rowy, rows = 250, 250, 0, 1
-        placed = []
-        for slug, label in items:
-            cw = int(22 + 22 + tw(label, 14, 600) + 8)
-            if x + cw > W:
-                x, rowy, rows = x0, rowy + 50, rows + 1
-            placed.append((slug, label, x, rowy, cw))
-            x += cw + 10
-        gh = max(rows * 50 + 22, 92)
-        b.append(f'<g transform="translate(0 {y})"><rect x=".5" y=".5" width="{W - 1}" height="{gh - 1}" rx="22" fill="{PANEL}" stroke="{EDGE}"/>')
-        b.append(text(26, 40, en, 16, INK, 800))
-        b.append(text(26, 62, ar, 14, MUTED, 500, family=ARF))
-        for slug, label, px, py, cw in placed:
-            b.append(f'<rect x="{px}" y="{py + 14}" width="{cw}" height="38" rx="19" fill="#0A1230" stroke="{EDGE}"/>')
-            b.append(brand(slug, px + 14, py + 24, 18))
-            b.append(text(px + 40, py + 38.5, label, 14, INK, 600))
-        b.append("</g>")
-        y += gh + 16
-    write("stack.svg", svg(W, y - 16, "".join(b), "", "", "Tech stack"))
-
-
-# ───────────────────────── principles ─────────────────────────
-def build_principles():
-    items = [("wifi-off", "Offline-first", "تعمل بلا إنترنت",
-              "Local storage first, then sync when the network returns.", "Field conditions are the default, not the edge case.", "teal"),
-             ("shield-check", "Private by design", "الخصوصية أولاً",
-              "Sensitive data stays on the device, encrypted wherever", "it has to sync. No trackers, no pointless accounts.", "violet"),
-             ("languages", "Arabic-native", "عربي أصيل",
-              "True RTL layouts, Arabic-aware search and matching,", "dialect support and Arabic typography from screen one.", "blue"),
-             ("test-tube-diagonal", "Tested & honest", "موثوق وصريح",
-              "Self-test routes and CI builds, and READMEs that state", "their limits and risks openly instead of hiding them.", "amber")]
-    W, gap, th = 1000, 24, 150
-    tile = (W - gap) / 2
-    H = 2 * th + gap
-    d = "".join(grad(f"a{i}", *ACCENTS[acc]) for i, (*_, acc) in enumerate(items))
-    d += f'<clipPath id="cp"><rect width="{tile}" height="{th}" rx="22"/></clipPath>'
-    b = []
-    for i, (icon, en, ar, l1, l2, acc) in enumerate(items):
-        x = (i % 2) * (tile + gap)
-        y = (i // 2) * (th + gap)
-        c1 = ACCENTS[acc][0]
-        b.append(f'<g transform="translate({x} {y})"><g clip-path="url(#cp)"><rect width="{tile}" height="{th}" fill="{PANEL}"/>'
-                 f'<circle cx="{tile - 20}" cy="10" r="100" fill="{c1}" opacity=".09"/></g>'
-                 f'<rect x=".5" y=".5" width="{tile - 1}" height="{th - 1}" rx="22" fill="none" stroke="{EDGE}"/>'
-                 f'<rect x="24" y="26" width="58" height="58" rx="18" fill="url(#a{i})"/>{lu(icon, 38, 40, 30, "#FFFFFF")}'
-                 f'{text(100, 52, en, 21, INK, 800)}{text(100, 78, ar, 16, c1, 700, family=ARF)}'
-                 f'{text(24, 112, l1, 13.5, "#B7C6EA")}{text(24, 132, l2, 13.5, "#B7C6EA")}</g>')
-    write("principles.svg", svg(W, H, "".join(b), d, "", "Principles"))
-
-
-# ───────────────────────── footer ─────────────────────────
-def build_footer():
-    W, H = 1000, 120
-    d = grad("f", "#0E1630", "#0A1024", 0, 0, 0, 1)
-    b = (f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="24" fill="url(#f)" stroke="{EDGE}"/>'
-         '<g transform="translate(420 22)"><rect width="160" height="12" fill="#0B0B0B"/><rect y="12" width="160" height="12" fill="#F4F4F4"/>'
-         '<rect y="24" width="160" height="12" fill="#0F9D58"/><path d="M0 0 L52 18 L0 36 Z" fill="#E4312B"/></g>'
-         + text(W / 2, 84, "Crafted with love from Palestine · Gaza", 17, INK, 700, "middle")
-         + text(W / 2, 108, "صُنع بكل حب من فلسطين · غزة", 15, MUTED, 600, "middle", ARF))
-    write("footer.svg", svg(W, H, b, d, "", "Crafted with love from Palestine"))
-
-
-# ───────────────────────── text-heavy blocks (no plain markdown text, so every word uses the embedded fonts) ─────────────────────────
 def wrap(s, size, weight, family, maxw):
     lines, cur = [], ""
     for word in s.split():
@@ -538,6 +308,145 @@ def wrap(s, size, weight, family, maxw):
     return lines
 
 
+# ───────────────────────── language chooser ─────────────────────────
+def build_language_chooser():
+    d = grad("t", "#60A5FA", "#A78BFA", 0, 0, 1, 0)
+    title = (f'<rect x=".5" y=".5" width="999" height="63" rx="22" fill="{PANEL}" stroke="{EDGE}"/>'
+             f'{lu("globe", 24, 18, 28, "#60A5FA")}'
+             f'{text(66, 41, "Choose your language", 22, INK, 800, extra=LS_TIGHT)}'
+             f'{text(976, 42, "اختر لغتك", 22, "#A78BFA", 800, "end", ARF)}')
+    write("lang-title.svg", svg(1000, 64, title, d, "", "Choose your language · اختر لغتك"))
+    for lang, tile_txt, name, sub, c1, c2 in (
+            ("en", "EN", "English", "Read the full profile in English", "#3B82F6", "#6366F1"),
+            ("ar", "ع", "العربية", "اقرأ الملف الكامل بالعربية", "#10B981", "#14B8A6")):
+        W, H = 440, 104
+        rtl = lang == "ar"
+        f = fam_of(lang)
+        dd = grad("a", c1, c2) + grad("g", "#0F1B3D", "#0A1228", 0, 0, 1, 1)
+        tilex = W - 22 - 64 if rtl else 22
+        tx = W - 22 - 64 - 18 if rtl else 22 + 64 + 18
+        b = (f'<rect x="1" y="1" width="{W - 2}" height="{H - 2}" rx="26" fill="url(#g)" stroke="{c1}" stroke-opacity=".8" stroke-width="2"/>'
+             f'<rect x="{tilex}" y="20" width="64" height="64" rx="20" fill="url(#a)"/>'
+             f'{text(tilex + 32, 62, tile_txt, 30 if not rtl else 40, "#FFFFFF", 800, "middle", f)}'
+             f'{text(tx, 50, name, 28 if not rtl else 32, INK, 800, anc(lang), f)}'
+             f'{text(tx, 76, sub, 14 if not rtl else 15, "#9FB4E3", 500, anc(lang), f)}'
+             f'{lu("chevrons-down", 22 if rtl else W - 22 - 24, 40, 24, c1, 2.6)}')
+        write(f"lang-{lang}.svg", svg(W, H, b, dd, "", name))
+
+
+# ───────────────────────── nav + contact ─────────────────────────
+NAV = [("projects", "rocket", "#8B5CF6", "Projects", "المشاريع"), ("stack", "layers", "#06B6D4", "Stack", "التقنيات"),
+       ("principles", "shield-check", "#22C55E", "Principles", "المبادئ"), ("contact", "mail", "#F59E0B", "Contact", "تواصل")]
+
+
+def build_nav():
+    for lang in LANGS:
+        f = fam_of(lang)
+        for slug, icon, c, en, ar in NAV:
+            label = ar if lang == "ar" else en
+            w = int(44 + tw(label, 15, 700, f) + 22)
+            ix = w - 36 if lang == "ar" else 16
+            tx_ = w - 44 if lang == "ar" else 44
+            body = (f'<rect x=".5" y=".5" width="{w - 1}" height="42" rx="21" fill="{PANEL}" stroke="{c}" stroke-opacity=".55"/>'
+                    f'{lu(icon, ix, 11, 20, c)}{text(tx_, 27.5, label, 15, INK, 700, anc(lang), f)}')
+            write(f"{lang}/nav-{slug}.svg", svg(w, 44, body, "", "", label))
+
+
+CONTACTS = [
+    ("instagram", "Instagram", "@sajedd.0", "", ("#F58529", "#DD2A7B", "#8134AF")),
+    ("facebook", "Facebook", "saged.t", "", ("#1877F2", "#1877F2", "#1877F2")),
+    ("whatsapp", "WhatsApp", "Message me", "راسلني", ("#25D366", "#25D366", "#25D366")),
+    ("x", "X", "@saged_al", "", ("#2B2F3A", "#2B2F3A", "#2B2F3A")),
+    ("github", "GitHub", "@Dev-saged", "", ("#30363D", "#30363D", "#30363D")),
+]
+
+
+def build_contact():
+    for slug, name, handle, handle_ar, cols in CONTACTS:
+        for suffix, hd, fam in (("", handle, LAT), ("-ar", handle_ar, ARF)):
+            if suffix and not hd:
+                continue
+            w, h = 188, 60
+            d = (f'<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{cols[0]}"/>'
+                 f'<stop offset=".55" stop-color="{cols[1]}"/><stop offset="1" stop-color="{cols[2]}"/></linearGradient>'
+                 + grad("e", EDGE, cols[1] if slug not in ("x", "github") else "#4A5A8C", 0, 0, 1, 1))
+            body = (f'<rect x=".5" y=".5" width="{w - 1}" height="{h - 1}" rx="18" fill="{PANEL}" stroke="url(#e)"/>'
+                    f'<rect x="9" y="9" width="42" height="42" rx="13" fill="url(#g)"/>'
+                    f'{brand(slug, 18, 18, 24, "#FFFFFF")}'
+                    f'{text(62, 28, name, 16, INK, 700)}{text(62, 46, hd, 12.5 if fam == LAT else 13.5, MUTED, 500, family=fam)}')
+            write(f"contact-{slug}{suffix}.svg", svg(w, h, body, d, "", name))
+
+
+# ───────────────────────── section headers ─────────────────────────
+HEADERS = {
+    "about": ("01", "ABOUT", "About", "Who I am and how I build", "نبذة", "من أنا وكيف أبني", "user", "blue"),
+    "projects": ("02", "WORK", "Featured Projects", "Real products, shipped and documented", "أبرز المشاريع",
+                 "منتجات حقيقية، منشورة وموثّقة", "rocket", "violet"),
+    "stack": ("03", "STACK", "Tech Stack", "Tools I reach for every day", "التقنيات", "الأدوات التي أستخدمها كل يوم", "layers", "cyan"),
+    "principles": ("04", "CRAFT", "How I Build", "Principles behind every project", "فلسفة العمل",
+                   "المبادئ التي تقف خلف كل مشروع", "shield-check", "green"),
+    "contact": ("05", "CONTACT", "Let's Talk", "Open to collaborations on Arabic AI, offline-first and humanitarian tech", "تواصل معي",
+                "منفتح على التعاون في الذكاء الاصطناعي العربي والتطبيقات الميدانية والتقنية الإنسانية", "mail", "amber"),
+    "metrics": ("06", "LIVE", "GitHub Metrics", "Live from the GitHub API", "إحصائيات", "مباشرة من واجهة GitHub", "star", "rose"),
+}
+
+
+def build_headers():
+    for slug, (num, tag, en, sub_en, ar, sub_ar, icon, acc) in HEADERS.items():
+        c1, c2 = ACCENTS[acc]
+        for lang in LANGS:
+            rtl = lang == "ar"
+            W, H = 1000, 100
+            title, sub = (ar, sub_ar) if rtl else (en, sub_en)
+            f = fam_of(lang)
+            d = grad("a", c1, c2) + grad("l", c1, c2, 0, 0, 1, 0) + grad("pn", PANEL2, "#0A1228", 0, 0, 1, 0)
+            d += f'<clipPath id="cp"><rect width="{W}" height="{H}" rx="24"/></clipPath>'
+            style = ("@keyframes slide{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-260}}"
+                     ".run{stroke-dasharray:90 170;animation:slide 4s linear infinite}")
+            tile_x = edge(lang, 22, 56)
+            tx_ = pos(lang, 98)
+            b = (f'<g clip-path="url(#cp)"><rect width="{W}" height="{H}" fill="url(#pn)"/>'
+                 f'<circle cx="{40 if rtl else W - 40}" cy="0" r="130" fill="{c1}" opacity=".10"/>'
+                 f'<line x1="0" y1="97" x2="{W}" y2="97" stroke="#1D2B55" stroke-width="6"/>'
+                 f'<line class="run" x1="0" y1="97" x2="{W}" y2="97" stroke="url(#l)" stroke-width="6"/></g>'
+                 f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="24" fill="none" stroke="{EDGE}"/>'
+                 f'<rect x="{tile_x}" y="20" width="56" height="56" rx="17" fill="url(#a)"/>{lu(icon, tile_x + 13, 33, 30, "#FFFFFF", 2)}'
+                 f'{text(tx_, 47, title, 32 if rtl else 30, INK, 800, anc(lang), f, "" if rtl else LS_TIGHT)}'
+                 f'{text(tx_ + (0 if rtl else 1), 72, sub, 15 if rtl else 14, MUTED, 500, anc(lang), f)}'
+                 f'{text(26 if rtl else W - 26, 46, num if rtl else f"{num} / {tag}", 12.5, MUTED, 700, "start" if rtl else "end", MONO, LS_WIDE)}')
+            write(f"{lang}/h-{slug}.svg", svg(W, H, b, d, style, title))
+
+
+# ───────────────────────── stats strip ─────────────────────────
+STATS = [("12", "Featured projects", "مشروعاً مميزاً", "boxes", "#8B5CF6"),
+         ("6", "Offline-first systems", "أنظمة تعمل بلا إنترنت", "wifi-off", "#14B8A6"),
+         ("AR · EN", "Bilingual interfaces", "واجهات ثنائية اللغة", "languages", "#3B82F6"),
+         ("100%", "Built on a phone", "مبنية من الجوال", "smartphone", "#F59E0B")]
+
+
+def build_stats():
+    for lang in LANGS:
+        rtl = lang == "ar"
+        f = fam_of(lang)
+        W, H = 1000, 150
+        gap = 20
+        tile = (W - 3 * gap) / 4
+        d = "".join(grad(f"t{i}", c, "#FFFFFF", 0, 0, 1, 1) for i, (*_, c) in enumerate(STATS))
+        d += f'<clipPath id="ct"><rect width="{tile}" height="{H}" rx="22"/></clipPath>'
+        b = []
+        for i, (val, en, ar, icon, c) in enumerate(STATS):
+            x = edge(lang, i * (tile + gap), tile)
+            label = ar if rtl else en
+            b.append(f'<g transform="translate({x} 0)"><g clip-path="url(#ct)"><rect width="{tile}" height="{H}" fill="{PANEL}"/>'
+                     f'<rect width="{tile}" height="6" fill="{c}"/></g>'
+                     f'<rect x=".5" y=".5" width="{tile - 1}" height="{H - 1}" rx="22" fill="none" stroke="{EDGE}"/>'
+                     f'{lu(icon, 22 if rtl else tile - 48, 26, 26, c)}'
+                     f'{text(tile - 24 if rtl else 24, 88, val, 44, "url(#t%d)" % i, 800, anc(lang), LAT, LS_TIGHT1)}'
+                     f'{text(tile - 24 if rtl else 24, 124, label, 15 if rtl else 14.5, INK, 700, anc(lang), f)}</g>')
+        write(f"{lang}/stats.svg", svg(W, H, "".join(b), d, "", "Highlights"))
+
+
+# ───────────────────────── about ─────────────────────────
 ABOUT = {
     "en": dict(title="I'm Sajed.", sub="Software architect · Gaza, Palestine",
                para="I design, code and ship complete systems entirely from a mobile phone, with no desktop in the loop.",
@@ -560,145 +469,390 @@ ABOUT = {
 }
 
 
-def about_panel(x, w, lang, defs_prefix):
-    d = ABOUT[lang]
-    rtl = lang == "ar"
-    fam = ARF if rtl else LAT
-    pad = 30
-    tx = x + w - pad if rtl else x + pad
-    anc = "end" if rtl else "start"
-    inner = w - 2 * pad
-    parts = []
-    y = 74
-    parts.append(text(tx, y, d["title"], 34 if rtl else 32, "url(#" + defs_prefix + "t)", 800, anc, fam))
-    y += 30
-    parts.append(text(tx, y, d["sub"], 15, "#7FB0FF" if not rtl else "#B79CFF", 700, anc, fam))
-    y += 34
-    for line in wrap(d["para"], 15.5, 500, fam, inner * 0.94):
-        parts.append(text(tx, y, line, 15.5, "#D5E0FA", 500, anc, fam))
-        y += 25
-    y += 14
-    parts.append(text(tx, y, d["label"], 13 if rtl else 11.5, MUTED, 700, anc, fam, "" if rtl else 'letter-spacing="1.6"'))
-    y += 24
-    for icon, title, desc, acc in d["items"]:
-        ix = x + w - pad - 42 if rtl else x + pad
-        parts.append(f'<rect x="{ix}" y="{y - 4}" width="42" height="42" rx="13" fill="url(#{defs_prefix}{acc})"/>')
-        parts.append(lu(icon, ix + 10, y + 6, 22, "#FFFFFF"))
-        ttx = x + w - pad - 58 if rtl else x + pad + 58
-        parts.append(text(ttx, y + 14, title, 16, INK, 800, anc, fam))
-        yy = y + 38
-        for line in wrap(desc, 13.5, 500, fam, (inner - 58) * 0.94):
-            parts.append(text(ttx, yy, line, 13.5, "#AFC0E6", 500, anc, fam))
-            yy += 21
-        y = yy + 12
-    return parts, y
-
-
 def build_about():
-    W, gap = 1000, 24
-    pw = (W - gap) / 2
-    defs = "".join(grad(f"a{lang}{k}", *ACCENTS[k]) for lang in ("en", "ar") for k in ("violet", "teal", "amber"))
-    defs += grad("aent", "#FFFFFF", "#8DBBFF", 0, 0, 1, 0) + grad("aart", "#FFFFFF", "#C9B8FF", 0, 0, 1, 0)
-    pe, ye = about_panel(0, pw, "en", "aen")
-    pa, ya = about_panel(pw + gap, pw, "ar", "aar")
-    H = int(max(ye, ya) + 20)
-    defs += f'<clipPath id="cp"><rect width="{pw}" height="{H}" rx="24"/></clipPath>'
-    bg = ""
-    for i, c in enumerate(("#3B82F6", "#8B5CF6")):
-        x = i * (pw + gap)
-        bg += (f'<g transform="translate({x} 0)"><g clip-path="url(#cp)"><rect width="{pw}" height="{H}" fill="{PANEL}"/>'
-               f'<circle cx="{pw - 30 if i == 0 else 30}" cy="0" r="150" fill="{c}" opacity=".12"/><rect width="{pw}" height="5" fill="{c}"/></g>'
-               f'<rect x=".5" y=".5" width="{pw - 1}" height="{H - 1}" rx="24" fill="none" stroke="{EDGE}"/></g>')
-    write("about.svg", svg(W, H, bg + "".join(pe) + "".join(pa), defs, "", "About Sajed Al-Abadlah"))
+    for lang in LANGS:
+        d = ABOUT[lang]
+        rtl = lang == "ar"
+        f = fam_of(lang)
+        W, pad, gap = 1000, 38, 28
+        A = anc(lang)
+        X = lambda v: pos(lang, v)
+        parts = []
+        y = 92
+        parts.append(text(X(pad), y, d["title"], 50 if rtl else 46, "url(#tt)", 800, A, f))
+        y += 38
+        parts.append(text(X(pad), y, d["sub"], 17 if rtl else 16.5, "#9BC2FF" if not rtl else "#C4B0FF", 700, A, f))
+        y += 36
+        for line in wrap(d["para"], 17, 500, f, 700):
+            parts.append(text(X(pad), y, line, 17, "#D5E0FA", 500, A, f))
+            y += 29
+        y += 14
+        parts.append(f'<line x1="{pad}" y1="{y}" x2="{W - pad}" y2="{y}" stroke="#1D2B55"/>')
+        y += 34
+        parts.append(text(X(pad), y, d["label"], 13.5 if rtl else 12, MUTED, 700, A, f, "" if rtl else 'letter-spacing="1.8"'))
+        y += 30
+        colw = (W - 2 * pad - 2 * gap) / 3
+        col_h = 0
+        for i, (icon, title, desc, acc) in enumerate(d["items"]):
+            cx = edge(lang, pad + i * (colw + gap), colw)
+            tile_x = cx + colw - 48 if rtl else cx
+            tx_ = cx + colw if rtl else cx
+            parts.append(f'<rect x="{tile_x}" y="{y}" width="48" height="48" rx="15" fill="url(#{acc})"/>{lu(icon, tile_x + 12, y + 12, 24, "#FFFFFF")}')
+            yy = y + 78
+            for line in wrap(title, 17, 800, f, colw):
+                parts.append(text(tx_, yy, line, 17, INK, 800, A, f))
+                yy += 24
+            yy += 4
+            for line in wrap(desc, 14, 500, f, colw * 0.95):
+                parts.append(text(tx_, yy, line, 14, "#AFC0E6", 500, A, f))
+                yy += 22
+            col_h = max(col_h, yy - y)
+        H = int(y + col_h + 30)
+        defs = grad("tt", "#FFFFFF", "#8DBBFF" if not rtl else "#C9B8FF", 0, 0, 1, 0)
+        defs += "".join(grad(k, *ACCENTS[k]) for k in ("violet", "teal", "amber"))
+        defs += f'<clipPath id="cp"><rect width="{W}" height="{H}" rx="28"/></clipPath>'
+        bg = (f'<g clip-path="url(#cp)"><rect width="{W}" height="{H}" fill="{PANEL}"/>'
+              f'<circle cx="{120 if rtl else W - 120}" cy="0" r="230" fill="{"#8B5CF6" if rtl else "#3B82F6"}" opacity=".13"/>'
+              f'<rect width="{W}" height="5" fill="{"#8B5CF6" if rtl else "#3B82F6"}"/></g>'
+              f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="28" fill="none" stroke="{EDGE}"/>')
+        write(f"{lang}/about.svg", svg(W, H, bg + "".join(parts), defs, "", "About Sajed Al-Abadlah"))
+
+
+# ───────────────────────── sub headers, demo button, footer ─────────────────────────
+SUBS = [("ai", "AI & Automation", "الذكاء والأتمتة", "sparkles", "violet"),
+        ("offline", "Offline-first Systems", "أنظمة تعمل بلا إنترنت", "wifi-off", "teal"),
+        ("repos", "More Repositories & Experiments", "مستودعات وتجارب أخرى", "folder-git-2", "cyan"),
+        ("closed", "Closed-source Tools", "أدوات غير منشورة", "lock", "rose")]
 
 
 def build_subheaders():
-    items = [("sub-ai", "AI & Automation", "الذكاء والأتمتة", "sparkles", "violet"),
-             ("sub-offline", "Offline-first Systems", "أنظمة تعمل بلا إنترنت", "wifi-off", "teal"),
-             ("sub-repos", "More Repositories & Experiments", "مستودعات وتجارب أخرى", "folder-git-2", "cyan"),
-             ("sub-closed", "Closed-source Tools", "أدوات غير منشورة", "lock", "rose")]
-    for slug, en, ar, icon, acc in items:
+    for slug, en, ar, icon, acc in SUBS:
         c1, c2 = ACCENTS[acc]
-        W, H = 1000, 64
-        d = grad("a", c1, c2) + grad("l", c1, "#0E1630", 0, 0, 1, 0)
-        b = (f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="20" fill="{PANEL2}" stroke="{EDGE}"/>'
-             f'<rect x="12" y="12" width="40" height="40" rx="13" fill="url(#a)"/>{lu(icon, 22, 22, 20, "#FFFFFF")}'
-             f'{text(68, 40, en, 22, INK, 800, extra=LS_TIGHT)}'
-             f'{text(W - 22, 41, ar, 21, c1, 800, "end", ARF)}'
-             f'<rect x="24" y="{H - 4}" width="{W - 48}" height="2.5" rx="1.25" fill="url(#l)" opacity=".85"/>')
-        write(f"{slug}.svg", svg(W, H, b, d, "", en))
+        for lang in LANGS:
+            rtl = lang == "ar"
+            W, H = 1000, 64
+            d = grad("a", c1, c2) + grad("l", c1, "#0E1630", 0, 0, 1, 0)
+            tile_x = edge(lang, 12, 40)
+            flip = 'transform="translate(1000 0) scale(-1 1)"' if rtl else ""
+            b = (f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="20" fill="{PANEL2}" stroke="{EDGE}"/>'
+                 f'<rect x="{tile_x}" y="12" width="40" height="40" rx="13" fill="url(#a)"/>{lu(icon, tile_x + 10, 22, 20, "#FFFFFF")}'
+                 f'{text(pos(lang, 68), 41, ar if rtl else en, 23 if rtl else 22, INK, 800, anc(lang), fam_of(lang), "" if rtl else LS_TIGHT)}'
+                 f'<rect x="24" y="{H - 4}" width="{W - 48}" height="2.5" rx="1.25" fill="url(#l)" opacity=".85" {flip}/>')
+            write(f"{lang}/sub-{slug}.svg", svg(W, H, b, d, "", ar if rtl else en))
 
 
 def build_live_demo():
-    W, H = 560, 64
-    d = grad("a", "#14B8A6", "#10B981") + grad("g", "#0F2B33", "#0E1630", 0, 0, 1, 0)
-    b = (f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="32" fill="url(#g)" stroke="#14B8A6" stroke-opacity=".7"/>'
-         f'<circle cx="34" cy="32" r="22" fill="url(#a)"/>{lu("play", 25, 23, 18, "#FFFFFF", 2.4)}'
-         f'{text(68, 30, "Live demo", 18, INK, 800)}{text(68, 49, "GRCS on GitHub Pages", 12.5, "#7FD9CB", 700)}'
-         f'{text(W - 26, 38, "تجربة مباشرة", 19, "#5EEAD4", 800, "end", ARF)}')
-    write("live-demo.svg", svg(W, H, b, d, "", "Live demo: GRCS on GitHub Pages"))
+    for lang in LANGS:
+        rtl = lang == "ar"
+        W, H = 560, 64
+        d = grad("a", "#14B8A6", "#10B981") + grad("g", "#0F2B33", "#0E1630", 1 if rtl else 0, 0, 0 if rtl else 1, 0)
+        cxx = W - 34 if rtl else 34
+        b = (f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="32" fill="url(#g)" stroke="#14B8A6" stroke-opacity=".7"/>'
+             f'<circle cx="{cxx}" cy="32" r="22" fill="url(#a)"/>{lu("play", cxx - 9, 23, 18, "#FFFFFF", 2.4)}')
+        if rtl:
+            b += (text(W - 68, 31, "تجربة مباشرة", 20, INK, 800, "end", ARF)
+                  + text(W - 68, 52, "نظام GRCS على GitHub Pages", 13.5, "#7FD9CB", 600, "end", ARF))
+        else:
+            b += text(68, 30, "Live demo", 18, INK, 800) + text(68, 49, "GRCS on GitHub Pages", 12.5, "#7FD9CB", 700)
+        write(f"{lang}/live-demo.svg", svg(W, H, b, d, "", "Live demo: GRCS on GitHub Pages"))
+
+
+def build_footer():
+    for lang in LANGS:
+        rtl = lang == "ar"
+        W, H = 1000, 120
+        d = grad("f", "#0E1630", "#0A1024", 0, 0, 0, 1)
+        l1 = "صُنع بكل حب من فلسطين · غزة" if rtl else "Crafted with love from Palestine · Gaza"
+        l2 = "ساجد العبادلة · Dev-saged" if rtl else "Sajed Al-Abadlah · Dev-saged"
+        b = (f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="24" fill="url(#f)" stroke="{EDGE}"/>'
+             '<g transform="translate(420 20)"><rect width="160" height="12" fill="#0B0B0B"/><rect y="12" width="160" height="12" fill="#F4F4F4"/>'
+             '<rect y="24" width="160" height="12" fill="#0F9D58"/><path d="M0 0 L52 18 L0 36 Z" fill="#E4312B"/></g>'
+             + text(W / 2, 82, l1, 20 if rtl else 18, INK, 800, "middle", fam_of(lang))
+             + text(W / 2, 106, l2, 14, MUTED, 500, "middle", fam_of(lang)))
+        write(f"{lang}/footer.svg", svg(W, H, b, d, "", l1))
+
+
+# ───────────────────────── project cards ─────────────────────────
+# slug, title, ar title, repo, accent, icon, tag, english description, arabic description, chips, featured
+PROJECTS = [
+    ("lakta", "Lakta Studio AI", "استوديو لقطة", "Lakta-Studio-AI", "violet", "video", "v34.15",
+     "Turns long episodes into ready Shorts & Reels: AI picks moments, edits, adds Arabic captions.",
+     "يحوّل الحلقات الطويلة إلى Shorts وReels جاهزة: يختار اللحظات ويمنتج ويضيف ترجمة عربية متحركة.",
+     [("b", "python", "Python"), ("b", "ffmpeg", "FFmpeg"), ("b", "googlegemini", "Gemini"), ("b", "telegram", "Telegram")], True),
+    ("sawan", "Sawan Kids Story Studio", "استوديو ساجد للقصص", "sawan-kids-story-studio", "amber", "book-open", "v3.4",
+     "One idea in, an illustrated, narrated kids' story out, in Arabic or English. Offline-ready PWA.",
+     "فكرة واحدة تتحول إلى قصة أطفال مصوّرة ومروية بالعربية أو الإنجليزية. تطبيق PWA يعمل دون اتصال.",
+     [("b", "react", "React"), ("b", "typescript", "TypeScript"), ("b", "googlegemini", "Gemini"), ("b", "pwa", "PWA")], True),
+    ("social", "Social Manager", "مدير حساباتي", "social-manager", "rose", "share-2", "",
+     "Write once, publish to 7 platforms on schedule and auto-reply to comments. Runs on your phone.",
+     "اكتب مرة واحدة وانشر على 7 منصات في موعدك، مع ردود تلقائية على التعليقات. يعمل من جوالك.",
+     [("b", "flask", "Flask"), ("b", "sqlite", "SQLite"), ("b", "android", "Android"), ("b", "googlegemini", "Gemini")], False),
+    ("bulldozer", "Bulldozer Social", "بلدوزر سوشيل", "bulldozer-social", "gold", "megaphone", "AGPL-3.0",
+     "Postiz fork for scheduling, with a built-in comment-to-DM auto-reply engine for Instagram.",
+     "نسخة من Postiz لجدولة المنشورات، مع محرك رد تلقائي من التعليق إلى رسالة خاصة على إنستغرام.",
+     [("b", "typescript", "TypeScript"), ("b", "temporal", "Temporal"), ("b", "instagram", "Instagram")], False),
+    ("release", "Release Manager Pro", "مدير الإصدارات الذكي", "release-manager-pro", "cyan", "git-pull-request", "v2.6",
+     "Diffs your code, lets Gemini write the release notes, then ships to GitHub in one tap.",
+     "يحلّل الفروقات في كودك، ويكتب Gemini ملاحظات الإصدار، ثم ينشر على GitHub بضغطة واحدة.",
+     [("b", "javascript", "JavaScript"), ("b", "googlegemini", "Gemini"), ("b", "github", "GitHub"), ("b", "android", "Android")], False),
+    ("sms", "Local SMS Parser", "معالج رسائل SMS", "local-sms-parser", "blue", "message-square-text", "",
+     "Turns Excel rosters into personalised SMS batches. 100% in-browser, nothing uploaded.",
+     "يحوّل كشوف Excel إلى رسائل SMS مخصّصة. كل المعالجة داخل المتصفح ولا يُرفع أي شيء.",
+     [("b", "javascript", "JavaScript"), ("b", "html5", "HTML5"), ("b", "css", "CSS")], False),
+    ("grcs", "Gaza Refugee Camps System", "منظومة مخيمات النزوح", "wasla-system", "teal", "tent", "v3.0",
+     "Offline-first registry for displacement camps, live sync across devices. Android + PWA.",
+     "سجل لمخيمات النزوح يعمل دون إنترنت ويتزامن مباشرة بين الأجهزة. أندرويد وPWA.",
+     [("b", "javascript", "JavaScript"), ("b", "firebase", "Firestore"), ("b", "cloudflare", "Workers"), ("b", "pwa", "PWA")], True),
+    ("ghiras", "Ghiras Al-Khair", "غراس الخير", "ghiras-alkhair", "green", "heart-handshake", "",
+     "Orphan-care management for charities: files, sponsorships, reports, roles, encrypted data.",
+     "إدارة رعاية الأيتام للجمعيات الخيرية: ملفات وكفالات وتقارير وصلاحيات وبيانات مشفّرة.",
+     [("b", "html5", "HTML5"), ("b", "javascript", "JavaScript"), ("b", "openjdk", "Java"), ("b", "android", "Android")], False),
+    ("mushajjir", "Mushajjir", "مُشَجِّر", "Mushajjir", "crimson", "network", "v1.2",
+     "Arabic family-tree builder: 3 layouts, 8 export formats, 4,000+ people at 60fps, 56 self-tests.",
+     "بانٍ لشجرة العائلة بالعربية: 3 تخطيطات و8 صيغ تصدير، و4000+ فرد بسلاسة 60 إطارًا، و56 اختبارًا ذاتيًا.",
+     [("b", "javascript", "JavaScript"), ("b", "android", "Android"), ("l", "test-tube-diagonal", "56 tests")], False),
+    ("aid", "Offline Aid Manager", "نظام إدارة الإغاثة", "offline-aid-manager", "blue", "package-open", "",
+     "Beneficiary roster manager for field relief work. CSV in/out, data never leaves the device.",
+     "مدير كشوف المستفيدين للعمل الإغاثي الميداني. استيراد وتصدير CSV، والبيانات لا تغادر الجهاز.",
+     [("b", "javascript", "JavaScript"), ("b", "html5", "HTML5"), ("b", "css", "CSS")], False),
+    ("anira", "Anira", "أنيرا", "Anabat", "violet", "clipboard-list", "v1.4",
+     "Humanitarian proxy registration with duplicate detection, Excel/PDF export, Telegram backup.",
+     "تسجيل الإنابات الإنسانية مع كشف التكرار وتصدير Excel وPDF ونسخ احتياطي إلى تيليجرام.",
+     [("b", "javascript", "JavaScript"), ("b", "telegram", "Telegram"), ("b", "android", "Android")], False),
+    ("daftar", "Daftar", "دفتر", "daftar", "amber", "notebook-pen", "v1.0",
+     "Debt ledger for three shop branches: offline, Firebase sync, 80mm thermal receipts.",
+     "دفتر ديون لثلاثة فروع تجارية: يعمل دون إنترنت، مع مزامنة Firebase وفواتير حرارية 80mm.",
+     [("b", "javascript", "JavaScript"), ("b", "firebase", "Firebase"), ("b", "android", "Android")], False),
+]
+
+
+def build_cards():
+    W, H = 480, 222
+    for slug, title, ar, repo, acc, icon, tag, d_en, d_ar, chips, featured in PROJECTS:
+        c1, c2 = ACCENTS[acc]
+        for lang in LANGS:
+            rtl = lang == "ar"
+            f = fam_of(lang)
+            lines = wrap(d_ar if rtl else d_en, 14.5 if rtl else 14, 500, f, W - 44 - 6)
+            assert len(lines) <= 2, f"{lang}/{slug}: description needs {len(lines)} lines"
+            d = grad("a", c1, c2) + grad("p", PANEL2, "#0A1228", 0, 0, 0, 1) + grad("top", c1, c2, 0, 0, 1, 0)
+            style = ("@keyframes shine{0%{transform:translateX(-520px)}100%{transform:translateX(520px)}}"
+                     ".sh{animation:shine 6s ease-in-out infinite}")
+            main_title, second = (ar, title) if rtl else (title, ar)
+            tag_w = (tw(tag, 12, 700, MONO) + 34) if tag else 0
+            tile_x = edge(lang, 22, 56, W)
+            b = [f'<clipPath id="c"><rect width="{W}" height="{H}" rx="20"/></clipPath>',
+                 f'<g clip-path="url(#c)"><rect width="{W}" height="{H}" fill="url(#p)"/>',
+                 f'<rect width="{W}" height="4" fill="url(#top)"/>',
+                 f'<circle cx="{30 if rtl else W - 30}" cy="-10" r="120" fill="{c1}" opacity=".10"/>',
+                 f'<rect class="sh" x="0" y="0" width="90" height="{H}" fill="#FFFFFF" opacity=".035" transform="skewX(-18)"/></g>',
+                 f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="20" fill="none" stroke="{EDGE}"/>',
+                 f'<rect x="{tile_x}" y="24" width="56" height="56" rx="16" fill="url(#a)"/>',
+                 lu(icon, tile_x + 14, 38, 28, "#FFFFFF"),
+                 text(pos(lang, 94, W), 46, main_title, fit_size(main_title, 22 if rtl else 20, W - 22 - 94 - tag_w, 800, f),
+                      INK, 800, anc(lang), f, "" if rtl else 'letter-spacing="-0.3"'),
+                 text(pos(lang, 94, W), 70, second, 14 if rtl else 15, c1, 600, anc(lang), LAT if rtl else ARF)]
+            if tag:
+                tww = int(tw(tag, 12, 700, MONO) + 22)
+                tx0 = 22 if rtl else W - 22 - tww
+                b.append(f'<rect x="{tx0}" y="14" width="{tww}" height="22" rx="11" fill="{c1}" fill-opacity=".16" stroke="{c1}" stroke-opacity=".6"/>')
+                b.append(text(tx0 + tww / 2, 29.5, tag, 12, INK, 700, "middle", MONO))
+            for i, line in enumerate(lines):
+                b.append(text(pos(lang, 22, W), 110 + i * 22, line, 14.5 if rtl else 14, "#C4D2F5", 500, anc(lang), f))
+            b.append(f'<line x1="22" y1="148" x2="{W - 22}" y2="148" stroke="#1D2B55"/>')
+            cx = pos(lang, 22, W)
+            for kind, key, label in chips:
+                cw = int(22 + 18 + tw(label, 12.5, 600) + 6)
+                left = cx - cw if rtl else cx
+                if left < 22 or left + cw > W - 22:
+                    break
+                b.append(f'<rect x="{left}" y="160" width="{cw}" height="28" rx="14" fill="#0A1230" stroke="{EDGE}"/>')
+                b.append(brand(key, left + 10, 167, 14) if kind == "b" else lu(key, left + 10, 167, 14, "#34D399"))
+                b.append(text(left + 30, 178.5, label, 12.5, INK, 600))
+                cx = left - 8 if rtl else left + cw + 8
+            b.append(text(pos(lang, 22, W), 208, f"github.com/Dev-saged/{repo}", 11.5, MUTED, 500, anc(lang), MONO))
+            ox = 22 if rtl else W - 22 - (22 if featured else 0)
+            if rtl:
+                b.append(lu("arrow-up-left", ox + (22 if featured else 0), 196.5, 14, c1, 2.4))
+                b.append(text(ox + (22 if featured else 0) + 18, 208, "فتح", 14, c1, 800, "start", ARF))
+                if featured:
+                    b.append(lu("star", 22, 192, 16, "#FACC15"))
+            else:
+                b.append(lu("arrow-up-right", ox - 14, 196.5, 14, c1, 2.4))
+                b.append(text(ox - 18, 208, "Open", 12.5, c1, 700, "end"))
+                if featured:
+                    b.append(lu("star", W - 22 - 16, 192, 16, "#FACC15"))
+            write(f"{lang}/cards/{slug}.svg", svg(W, H + 14, "".join(b), d, style, f"{title} — {ar}"))
 
 
 MINI = [
     ("vyce", "Vyce-Ai", "Vyce-Ai", "cyan", "message-square-text",
-     "Single-file AI chat workspace (v3.0): templates, code runner, diff view, offline-capable."),
+     "Single-file AI chat workspace (v3.0): templates, code runner, diff view, offline-capable.",
+     "مساحة عمل لمحادثات الذكاء الاصطناعي بملف واحد (v3.0): قوالب، ومشغّل أكواد، وعرض الفروقات، وتعمل دون إنترنت."),
     ("aneera", "aneera", "aneera", "violet", "code-xml",
-     "Native Kotlin + Jetpack Compose + Room rebuild of Anira, at foundation stage with CI-built APKs."),
-    ("bakery", "bakery-pos", "bakery-pos", "amber", "store", "Single-file PWA point-of-sale for bakeries."),
-    ("dukanak", "Dukanak-Bot", "Dukanak-Bot", "blue", "send", "Python bot for the Dukanak app."),
-    ("netsubs", "NetSubsManager", "NetSubsManager", "teal", "wifi", "Android project: network subscriptions manager."),
+     "Native Kotlin + Jetpack Compose + Room rebuild of Anira, at foundation stage with CI-built APKs.",
+     "إعادة بناء أنيرا بشكل أصلي بـ Kotlin وJetpack Compose وRoom، في مرحلة التأسيس مع بناء APK عبر CI."),
+    ("bakery", "bakery-pos", "bakery-pos", "amber", "store", "Single-file PWA point-of-sale for bakeries.",
+     "نقطة بيع PWA بملف واحد مخصّصة للمخابز."),
+    ("dukanak", "Dukanak-Bot", "Dukanak-Bot", "blue", "send", "Python bot for the Dukanak app.", "بوت بايثون لتطبيق دُكانك."),
+    ("netsubs", "NetSubsManager", "NetSubsManager", "teal", "wifi", "Android project: network subscriptions manager.",
+     "مشروع أندرويد لإدارة اشتراكات الإنترنت."),
     ("promptforge", "PromptForge AI Pro", None, "violet", "wand-sparkles",
-     "Single-file Arabic AI prompt optimizer with real NLP, live multi-variant rephrasing and image-to-prompt extraction."),
+     "Single-file Arabic AI prompt optimizer with real NLP, live multi-variant rephrasing and image-to-prompt extraction.",
+     "محسّن أوامر عربي بملف واحد: معالجة لغوية حقيقية، وإعادة صياغة حية بنسخ متعددة، واستخراج الأوامر من الصور."),
     ("improver", "AI Prompt Improver", None, "rose", "brain",
-     "Android app that rewrites text into structured AI prompts through a dependency-free Python backend."),
+     "Android app that rewrites text into structured AI prompts through a dependency-free Python backend.",
+     "تطبيق أندرويد يحوّل النص إلى أوامر منظّمة للذكاء الاصطناعي عبر خادم بايثون بلا مكتبات خارجية."),
     ("adawati", "Adawati Toolkit", None, "gold", "wrench",
-     "Dashboard that packages independent HTML5 utilities into native Android APKs."),
+     "Dashboard that packages independent HTML5 utilities into native Android APKs.",
+     "لوحة تجمع أدوات HTML5 مستقلة داخل تطبيقات أندرويد أصلية."),
     ("audio", "Browser Audio Engine", None, "green", "audio-lines",
-     "Browser-native audio engine with real-time beat matching for live event mixing."),
+     "Browser-native audio engine with real-time beat matching for live event mixing.",
+     "محرك صوتي داخل المتصفح بمزامنة إيقاع لحظية للمزج في المناسبات الحية."),
 ]
 
 
 def build_mini_cards():
     W, H = 480, 160
-    for slug, title, repo, acc, icon, desc in MINI:
+    for slug, title, repo, acc, icon, d_en, d_ar in MINI:
         c1, c2 = ACCENTS[acc]
-        lines = wrap(desc, 13.5, 500, LAT, W - 44 - 8)
-        assert len(lines) <= 2, f"{slug}: description needs {len(lines)} lines"
-        d = grad("a", c1, c2) + grad("p", PANEL2, "#0A1228", 0, 0, 0, 1) + grad("top", c1, c2, 0, 0, 1, 0)
-        d += f'<clipPath id="c"><rect width="{W}" height="{H}" rx="20"/></clipPath>'
-        b = [f'<g clip-path="url(#c)"><rect width="{W}" height="{H}" fill="url(#p)"/><rect width="{W}" height="4" fill="url(#top)"/>'
-             f'<circle cx="{W - 30}" cy="-10" r="110" fill="{c1}" opacity=".10"/></g>',
-             f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="20" fill="none" stroke="{EDGE}"/>',
-             f'<rect x="22" y="22" width="46" height="46" rx="14" fill="url(#a)"/>{lu(icon, 33, 33, 24, "#FFFFFF")}',
-             text(84, 53, title, fit_size(title, 19, W - 84 - 22), INK, 800, extra=LS_TIGHT)]
-        for i, line in enumerate(lines):
-            b.append(text(22, 92 + i * 20, line, 13.5, "#C4D2F5", 500))
-        b.append(f'<line x1="22" y1="124" x2="{W - 22}" y2="124" stroke="#1D2B55"/>')
-        if repo:
-            b.append(text(22, 147, f"github.com/Dev-saged/{repo}", 11.5, MUTED, 500, family=MONO))
-            b.append(lu("arrow-up-right", W - 36, 135.5, 14, c1, 2.4))
-            b.append(text(W - 40, 147, "Open", 12.5, c1, 700, "end"))
-        else:
-            b.append(lu("lock", 22, 135, 14, MUTED, 2.2))
-            b.append(text(42, 147, "Unpublished · closed source", 11.5, MUTED, 500, family=MONO))
-        write(f"mini/{slug}.svg", svg(W, H + 14, "".join(b), d, "", f"{title}"))
+        for lang in LANGS:
+            rtl = lang == "ar"
+            f = fam_of(lang)
+            lines = wrap(d_ar if rtl else d_en, 14 if rtl else 13.5, 500, f, W - 44 - 8)
+            assert len(lines) <= 2, f"{lang}/{slug}: description needs {len(lines)} lines"
+            d = grad("a", c1, c2) + grad("p", PANEL2, "#0A1228", 0, 0, 0, 1) + grad("top", c1, c2, 0, 0, 1, 0)
+            d += f'<clipPath id="c"><rect width="{W}" height="{H}" rx="20"/></clipPath>'
+            tile_x = edge(lang, 22, 46, W)
+            b = [f'<g clip-path="url(#c)"><rect width="{W}" height="{H}" fill="url(#p)"/><rect width="{W}" height="4" fill="url(#top)"/>'
+                 f'<circle cx="{30 if rtl else W - 30}" cy="-10" r="110" fill="{c1}" opacity=".10"/></g>',
+                 f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="20" fill="none" stroke="{EDGE}"/>',
+                 f'<rect x="{tile_x}" y="22" width="46" height="46" rx="14" fill="url(#a)"/>{lu(icon, tile_x + 11, 33, 24, "#FFFFFF")}',
+                 text(pos(lang, 84, W), 53, title, fit_size(title, 19, W - 84 - 22), INK, 800, anc(lang), LAT, LS_TIGHT)]
+            for i, line in enumerate(lines):
+                b.append(text(pos(lang, 22, W), 94 + i * 21, line, 14 if rtl else 13.5, "#C4D2F5", 500, anc(lang), f))
+            b.append(f'<line x1="22" y1="124" x2="{W - 22}" y2="124" stroke="#1D2B55"/>')
+            if repo:
+                b.append(text(pos(lang, 22, W), 147, f"github.com/Dev-saged/{repo}", 11.5, MUTED, 500, anc(lang), MONO))
+                if rtl:
+                    b.append(lu("arrow-up-left", 22, 135.5, 14, c1, 2.4))
+                    b.append(text(40, 148, "فتح", 14, c1, 800, "start", ARF))
+                else:
+                    b.append(lu("arrow-up-right", W - 36, 135.5, 14, c1, 2.4))
+                    b.append(text(W - 40, 147, "Open", 12.5, c1, 700, "end"))
+            else:
+                label = "غير منشور · مغلق المصدر" if rtl else "Unpublished · closed source"
+                b.append(lu("lock", W - 36 if rtl else 22, 135, 14, MUTED, 2.2))
+                b.append(text(W - 40 if rtl else 42, 147, label, 13 if rtl else 11.5, MUTED, 500, anc(lang), ARF if rtl else MONO))
+            write(f"{lang}/mini/{slug}.svg", svg(W, H + 14, "".join(b), d, "", title))
+
+
+# ───────────────────────── stack ─────────────────────────
+STACK = [
+    ("Languages", "اللغات", [("javascript", "JavaScript"), ("typescript", "TypeScript"), ("python", "Python"), ("kotlin", "Kotlin"),
+                             ("html5", "HTML5"), ("css", "CSS")]),
+    ("Frameworks & runtime", "الأطر وبيئات التشغيل", [("react", "React"), ("vite", "Vite"), ("tailwindcss", "Tailwind"), ("flask", "Flask"),
+                                                      ("nodedotjs", "Node.js"), ("express", "Express")]),
+    ("AI & APIs", "الذكاء والواجهات", [("googlegemini", "Gemini"), ("claude", "Claude"), ("anthropic", "Anthropic API"),
+                                                  ("telegram", "Telegram Bot"), ("github", "GitHub API")]),
+    ("Platform & data", "المنصات والبيانات", [("android", "Android"), ("pwa", "PWA"), ("firebase", "Firebase"), ("cloudflare", "Cloudflare"),
+                                              ("githubactions", "Actions"), ("ffmpeg", "FFmpeg"), ("sqlite", "SQLite"),
+                                              ("postgresql", "PostgreSQL"), ("temporal", "Temporal"), ("docker", "Docker")]),
+]
+
+
+def build_stack():
+    for lang in LANGS:
+        rtl = lang == "ar"
+        f = fam_of(lang)
+        W = 1000
+        y = 0
+        b = []
+        for en, ar, items in STACK:
+            x0, x, rowy, rows = 250, 250, 0, 1
+            placed = []
+            for slug, label in items:
+                cw = int(22 + 22 + tw(label, 14, 600) + 8)
+                if x + cw > W - 16:
+                    x, rowy, rows = x0, rowy + 50, rows + 1
+                placed.append((slug, label, x, rowy, cw))
+                x += cw + 10
+            gh = max(rows * 50 + 22, 92)
+            b.append(f'<g transform="translate(0 {y})"><rect x=".5" y=".5" width="{W - 1}" height="{gh - 1}" rx="22" fill="{PANEL}" stroke="{EDGE}"/>')
+            b.append(text(pos(lang, 26), 52, ar if rtl else en, 18 if rtl else 16, INK, 800, anc(lang), f))
+            for slug, label, px, py, cw in placed:
+                left = W - px - cw if rtl else px
+                b.append(f'<rect x="{left}" y="{py + 14}" width="{cw}" height="38" rx="19" fill="#0A1230" stroke="{EDGE}"/>')
+                b.append(brand(slug, left + 14, py + 24, 18))
+                b.append(text(left + 40, py + 38.5, label, 14, INK, 600))
+            b.append("</g>")
+            y += gh + 16
+        write(f"{lang}/stack.svg", svg(W, y - 16, "".join(b), "", "", "Tech stack"))
+
+
+# ───────────────────────── principles ─────────────────────────
+PRINCIPLES = [
+    ("wifi-off", "Offline-first", "تعمل بلا إنترنت",
+     "Local storage first, then sync when the network returns. Field conditions are the default, not the edge case.",
+     "التخزين المحلي أولاً، ثم المزامنة عند عودة الشبكة. ظروف الميدان هي الأصل وليست الاستثناء.", "teal"),
+    ("shield-check", "Private by design", "الخصوصية أولاً",
+     "Sensitive data stays on the device, encrypted wherever it has to sync. No trackers, no pointless accounts.",
+     "البيانات الحساسة تبقى على الجهاز ومشفّرة أينما احتاجت المزامنة. بلا متتبعات وبلا حسابات لا لزوم لها.", "violet"),
+    ("languages", "Arabic-native", "عربي أصيل",
+     "True RTL layouts, Arabic-aware search and matching, dialect support and Arabic typography from screen one.",
+     "تخطيط RTL حقيقي، وبحث ومطابقة تفهم العربية، ودعم اللهجات، وطباعة عربية من أول شاشة.", "blue"),
+    ("test-tube-diagonal", "Tested & honest", "موثوق وصريح",
+     "Self-test routes and CI builds, and READMEs that state their limits and risks openly instead of hiding them.",
+     "مسارات اختبار ذاتي وبناء عبر CI، وملفات README تذكر حدودها ومخاطرها بصراحة بدل إخفائها.", "amber"),
+]
+
+
+def build_principles():
+    for lang in LANGS:
+        rtl = lang == "ar"
+        f = fam_of(lang)
+        W, gap, th = 1000, 24, 150
+        tile = (W - gap) / 2
+        H = 2 * th + gap
+        d = "".join(grad(f"a{i}", *ACCENTS[p[5]]) for i, p in enumerate(PRINCIPLES))
+        d += f'<clipPath id="cp"><rect width="{tile}" height="{th}" rx="22"/></clipPath>'
+        b = []
+        for i, (icon, en, ar, d_en, d_ar, acc) in enumerate(PRINCIPLES):
+            col = i % 2
+            x = edge(lang, col * (tile + gap), tile)
+            y = (i // 2) * (th + gap)
+            c1 = ACCENTS[acc][0]
+            tile_x = tile - 24 - 58 if rtl else 24
+            tx_ = tile - 24 if rtl else 24
+            ttx = tile - 24 - 58 - 18 if rtl else 100
+            lines = wrap(d_ar if rtl else d_en, 14 if rtl else 13.5, 500, f, tile - 48 - 6)
+            assert len(lines) <= 2, f"{lang}/{en}: needs {len(lines)} lines"
+            b.append(f'<g transform="translate({x} {y})"><g clip-path="url(#cp)"><rect width="{tile}" height="{th}" fill="{PANEL}"/>'
+                     f'<circle cx="{20 if rtl else tile - 20}" cy="10" r="100" fill="{c1}" opacity=".09"/></g>'
+                     f'<rect x=".5" y=".5" width="{tile - 1}" height="{th - 1}" rx="22" fill="none" stroke="{EDGE}"/>'
+                     f'<rect x="{tile_x}" y="26" width="58" height="58" rx="18" fill="url(#a{i})"/>{lu(icon, tile_x + 14, 40, 30, "#FFFFFF")}'
+                     f'{text(ttx, 62, ar if rtl else en, 24 if rtl else 21, INK, 800, anc(lang), f)}'
+                     + "".join(text(tx_, 112 + j * 22, line, 14 if rtl else 13.5, "#B7C6EA", 500, anc(lang), f) for j, line in enumerate(lines))
+                     + '</g>')
+        write(f"{lang}/principles.svg", svg(W, H, "".join(b), d, "", "Principles"))
 
 
 def main():
     OUT.mkdir(exist_ok=True)
     build_banner()
+    build_language_chooser()
     build_nav()
     build_contact()
     build_headers()
     build_stats()
-    build_cards()
-    build_stack()
-    build_principles()
-    build_footer()
     build_about()
     build_subheaders()
     build_live_demo()
+    build_cards()
     build_mini_cards()
+    build_stack()
+    build_principles()
+    build_footer()
     print("assets generated:", sum(1 for _ in OUT.rglob("*.svg")))
 
 
