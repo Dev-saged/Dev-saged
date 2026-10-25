@@ -75,7 +75,7 @@ def contact_row(lang):
     rows = []
     for slug, alt, href in (reversed(CONTACT_LINKS) if lang == "ar" else CONTACT_LINKS):
         name = f"contact-{slug}-ar.svg" if lang == "ar" and slug == "whatsapp" else f"contact-{slug}.svg"
-        rows.append(link(href, img(name, alt, 'height="52"')))
+        rows.append(link(href, img(name, alt, 'height="38"')))
     return rows
 
 
@@ -87,7 +87,7 @@ def section(lang):
     sub = lambda key: img(f"{L}/sub-{key}.svg", t["sub_alt"][key], 'width="100%"')
     order = ("contact", "principles", "stack", "projects") if L == "ar" else ("projects", "stack", "principles", "contact")
     seq = [f'<a id="{L}"></a>']
-    seq += [link(f"#{L}-{k}", img(f"{L}/nav-{k}.svg", t["nav_alt"][k], 'height="40"')) for k in order]
+    seq += [link(f"#{L}-{k}", img(f"{L}/nav-{k}.svg", t["nav_alt"][k], 'height="32"')) for k in order]
     seq += ["<br>"] + contact_row(L) + [GAP]
     seq += [f'<a id="{L}-about"></a>', h("about"), img(f"{L}/about.svg", t["about_alt"], 'width="100%"'),
             img(f"{L}/stats.svg", t["stats_alt"], 'width="100%"'), GAP]

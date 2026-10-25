@@ -9,16 +9,16 @@
 
 <div align="center">
 <a id="en"></a>
-<a href="#en-projects"><img src="assets/en/nav-projects.svg" alt="Projects" height="40"></a>
-<a href="#en-stack"><img src="assets/en/nav-stack.svg" alt="Stack" height="40"></a>
-<a href="#en-principles"><img src="assets/en/nav-principles.svg" alt="Principles" height="40"></a>
-<a href="#en-contact"><img src="assets/en/nav-contact.svg" alt="Contact" height="40"></a>
+<a href="#en-projects"><img src="assets/en/nav-projects.svg" alt="Projects" height="32"></a>
+<a href="#en-stack"><img src="assets/en/nav-stack.svg" alt="Stack" height="32"></a>
+<a href="#en-principles"><img src="assets/en/nav-principles.svg" alt="Principles" height="32"></a>
+<a href="#en-contact"><img src="assets/en/nav-contact.svg" alt="Contact" height="32"></a>
 <br>
-<a href="https://instagram.com/sajedd.0"><img src="assets/contact-instagram.svg" alt="Instagram @sajedd.0" height="52"></a>
-<a href="https://facebook.com/saged.t"><img src="assets/contact-facebook.svg" alt="Facebook saged.t" height="52"></a>
-<a href="https://wa.me/972597857250"><img src="assets/contact-whatsapp.svg" alt="WhatsApp" height="52"></a>
-<a href="https://x.com/saged_al"><img src="assets/contact-x.svg" alt="X @saged_al" height="52"></a>
-<a href="https://github.com/Dev-saged"><img src="assets/contact-github.svg" alt="GitHub @Dev-saged" height="52"></a>
+<a href="https://instagram.com/sajedd.0"><img src="assets/contact-instagram.svg" alt="Instagram @sajedd.0" height="38"></a>
+<a href="https://facebook.com/saged.t"><img src="assets/contact-facebook.svg" alt="Facebook saged.t" height="38"></a>
+<a href="https://wa.me/972597857250"><img src="assets/contact-whatsapp.svg" alt="WhatsApp" height="38"></a>
+<a href="https://x.com/saged_al"><img src="assets/contact-x.svg" alt="X @saged_al" height="38"></a>
+<a href="https://github.com/Dev-saged"><img src="assets/contact-github.svg" alt="GitHub @Dev-saged" height="38"></a>
 <br><br>
 <a id="en-about"></a>
 <img src="assets/en/h-about.svg" alt="About" width="100%">
@@ -69,11 +69,11 @@
 <a id="en-contact"></a>
 <img src="assets/en/h-contact.svg" alt="Let's Talk" width="100%">
 <br>
-<a href="https://instagram.com/sajedd.0"><img src="assets/contact-instagram.svg" alt="Instagram @sajedd.0" height="52"></a>
-<a href="https://facebook.com/saged.t"><img src="assets/contact-facebook.svg" alt="Facebook saged.t" height="52"></a>
-<a href="https://wa.me/972597857250"><img src="assets/contact-whatsapp.svg" alt="WhatsApp" height="52"></a>
-<a href="https://x.com/saged_al"><img src="assets/contact-x.svg" alt="X @saged_al" height="52"></a>
-<a href="https://github.com/Dev-saged"><img src="assets/contact-github.svg" alt="GitHub @Dev-saged" height="52"></a>
+<a href="https://instagram.com/sajedd.0"><img src="assets/contact-instagram.svg" alt="Instagram @sajedd.0" height="38"></a>
+<a href="https://facebook.com/saged.t"><img src="assets/contact-facebook.svg" alt="Facebook saged.t" height="38"></a>
+<a href="https://wa.me/972597857250"><img src="assets/contact-whatsapp.svg" alt="WhatsApp" height="38"></a>
+<a href="https://x.com/saged_al"><img src="assets/contact-x.svg" alt="X @saged_al" height="38"></a>
+<a href="https://github.com/Dev-saged"><img src="assets/contact-github.svg" alt="GitHub @Dev-saged" height="38"></a>
 <br><br>
 <img src="assets/en/h-metrics.svg" alt="GitHub Metrics" width="100%">
 <img src="https://github-readme-stats.vercel.app/api?username=Dev-saged&show_icons=true&theme=tokyonight&hide_border=true&title_color=3B82F6&bg_color=0E1630" height="180" alt="GitHub stats">
@@ -90,16 +90,16 @@
 
 <div align="center">
 <a id="ar"></a>
-<a href="#ar-contact"><img src="assets/ar/nav-contact.svg" alt="تواصل" height="40"></a>
-<a href="#ar-principles"><img src="assets/ar/nav-principles.svg" alt="المبادئ" height="40"></a>
-<a href="#ar-stack"><img src="assets/ar/nav-stack.svg" alt="التقنيات" height="40"></a>
-<a href="#ar-projects"><img src="assets/ar/nav-projects.svg" alt="المشاريع" height="40"></a>
+<a href="#ar-contact"><img src="assets/ar/nav-contact.svg" alt="تواصل" height="32"></a>
+<a href="#ar-principles"><img src="assets/ar/nav-principles.svg" alt="المبادئ" height="32"></a>
+<a href="#ar-stack"><img src="assets/ar/nav-stack.svg" alt="التقنيات" height="32"></a>
+<a href="#ar-projects"><img src="assets/ar/nav-projects.svg" alt="المشاريع" height="32"></a>
 <br>
-<a href="https://github.com/Dev-saged"><img src="assets/contact-github.svg" alt="GitHub @Dev-saged" height="52"></a>
-<a href="https://x.com/saged_al"><img src="assets/contact-x.svg" alt="X @saged_al" height="52"></a>
-<a href="https://wa.me/972597857250"><img src="assets/contact-whatsapp-ar.svg" alt="WhatsApp" height="52"></a>
-<a href="https://facebook.com/saged.t"><img src="assets/contact-facebook.svg" alt="Facebook saged.t" height="52"></a>
-<a href="https://instagram.com/sajedd.0"><img src="assets/contact-instagram.svg" alt="Instagram @sajedd.0" height="52"></a>
+<a href="https://github.com/Dev-saged"><img src="assets/contact-github.svg" alt="GitHub @Dev-saged" height="38"></a>
+<a href="https://x.com/saged_al"><img src="assets/contact-x.svg" alt="X @saged_al" height="38"></a>
+<a href="https://wa.me/972597857250"><img src="assets/contact-whatsapp-ar.svg" alt="WhatsApp" height="38"></a>
+<a href="https://facebook.com/saged.t"><img src="assets/contact-facebook.svg" alt="Facebook saged.t" height="38"></a>
+<a href="https://instagram.com/sajedd.0"><img src="assets/contact-instagram.svg" alt="Instagram @sajedd.0" height="38"></a>
 <br><br>
 <a id="ar-about"></a>
 <img src="assets/ar/h-about.svg" alt="نبذة" width="100%">
@@ -150,11 +150,11 @@
 <a id="ar-contact"></a>
 <img src="assets/ar/h-contact.svg" alt="تواصل معي" width="100%">
 <br>
-<a href="https://github.com/Dev-saged"><img src="assets/contact-github.svg" alt="GitHub @Dev-saged" height="52"></a>
-<a href="https://x.com/saged_al"><img src="assets/contact-x.svg" alt="X @saged_al" height="52"></a>
-<a href="https://wa.me/972597857250"><img src="assets/contact-whatsapp-ar.svg" alt="WhatsApp" height="52"></a>
-<a href="https://facebook.com/saged.t"><img src="assets/contact-facebook.svg" alt="Facebook saged.t" height="52"></a>
-<a href="https://instagram.com/sajedd.0"><img src="assets/contact-instagram.svg" alt="Instagram @sajedd.0" height="52"></a>
+<a href="https://github.com/Dev-saged"><img src="assets/contact-github.svg" alt="GitHub @Dev-saged" height="38"></a>
+<a href="https://x.com/saged_al"><img src="assets/contact-x.svg" alt="X @saged_al" height="38"></a>
+<a href="https://wa.me/972597857250"><img src="assets/contact-whatsapp-ar.svg" alt="WhatsApp" height="38"></a>
+<a href="https://facebook.com/saged.t"><img src="assets/contact-facebook.svg" alt="Facebook saged.t" height="38"></a>
+<a href="https://instagram.com/sajedd.0"><img src="assets/contact-instagram.svg" alt="Instagram @sajedd.0" height="38"></a>
 <br><br>
 <img src="assets/ar/h-metrics.svg" alt="إحصائيات" width="100%">
 <img src="https://github-readme-stats.vercel.app/api?username=Dev-saged&show_icons=true&theme=tokyonight&hide_border=true&title_color=3B82F6&bg_color=0E1630" height="180" alt="GitHub stats">
