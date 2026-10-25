@@ -1,17 +1,29 @@
 #!/usr/bin/env python3
 """Generates every SVG used by README.md into ./assets. Run: python3 scripts/build_assets.py
 Icons: brand marks from Simple Icons (CC0), UI glyphs from Lucide (ISC); both bundled in icons.json."""
+import base64
+import io
 import json
 import pathlib
+from collections import defaultdict
 from html import escape
+
+from fontTools import subset
+from fontTools.ttLib import TTFont
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "assets"
 ICONS = json.loads((pathlib.Path(__file__).parent / "icons.json").read_text())
 
-LAT = "'Inter','Segoe UI','SF Pro Display','Helvetica Neue',Arial,sans-serif"
-ARF = "'Segoe UI','Noto Sans Arabic','Noto Kufi Arabic','Geeza Pro',Tahoma,Arial,sans-serif"
-MONO = "'JetBrains Mono','Fira Code',Consolas,monospace"
+FONT_DIR = pathlib.Path(__file__).parent / "fonts"
+LAT = "'Sora','Segoe UI',Arial,sans-serif"
+ARF = "'Cairo','Segoe UI','Noto Sans Arabic',Tahoma,sans-serif"
+MONO = "'JetBrains Mono',Consolas,monospace"
+FAMILY_KEY = {LAT: "sora", ARF: "cairo", MONO: "mono"}
+FACE_NAME = {"sora": "Sora", "cairo": "Cairo", "mono": "JetBrains Mono"}
+AR_RANGE = "U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF"
+LATIN_RANGE = "U+0000-05FF,U+2000-206F,U+20AC,U+2122,U+2212"
+USED = defaultdict(set)  # (family key, weight) -> characters used by the SVG being built
 
 LS_TIGHT = 'letter-spacing="-0.5"'
 LS_TIGHT1 = 'letter-spacing="-1"'
@@ -35,9 +47,76 @@ ACCENTS = {
 }
 
 
-def tw(text, size, bold=False, ar=False):
-    k = 0.5 if ar else (0.6 if bold else 0.56)
-    return len(text) * size * k
+def snap(fam, weight):
+    if fam == "mono":
+        return 500 if weight <= 500 else 700
+    return 500 if weight <= 500 else (700 if weight <= 700 else 800)
+
+
+def is_arabic(ch):
+    o = ord(ch)
+    return 0x0600 <= o <= 0x06FF or 0x0750 <= o <= 0x077F or 0xFB50 <= o <= 0xFDFF or 0xFE70 <= o <= 0xFEFF
+
+
+def font_file(fam, weight, arabic):
+    if fam == "sora":
+        return FONT_DIR / f"sora-latin-{weight}-normal.woff2"
+    if fam == "mono":
+        return FONT_DIR / f"jetbrains-mono-latin-{weight}-normal.woff2"
+    return FONT_DIR / f"cairo-{'arabic' if arabic else 'latin'}-{weight}-normal.woff2"
+
+
+_FONTS = {}
+
+
+def load_font(path):
+    if path not in _FONTS:
+        f = TTFont(path)
+        _FONTS[path] = (f.getBestCmap(), f["hmtx"], f["head"].unitsPerEm)
+    return _FONTS[path]
+
+
+def tw(s, size, weight=700, family=LAT):
+    """Real advance width of a string in the embedded font (no kerning), so chips and cards fit exactly."""
+    fam = FAMILY_KEY[family]
+    w = snap(fam, weight if isinstance(weight, int) else (700 if weight else 500))
+    total = 0.0
+    for ch in s:
+        cmap, hmtx, upem = load_font(font_file(fam, w, is_arabic(ch)))
+        g = cmap.get(ord(ch))
+        total += (hmtx[g][0] if g else upem * 0.55) / upem
+    return total * size
+
+
+def subset_face(fam, weight, chars):
+    faces = []
+    groups = [(True, [c for c in chars if is_arabic(c)]), (False, [c for c in chars if not is_arabic(c)])]
+    for arabic, cs in groups:
+        if not cs or (arabic and fam != "cairo"):
+            continue
+        opts = subset.Options()
+        opts.flavor = "woff2"
+        opts.layout_features = ["*"]
+        opts.hinting = False
+        opts.notdef_outline = False
+        font = TTFont(font_file(fam, weight, arabic))
+        sub = subset.Subsetter(opts)
+        sub.populate(text="".join(sorted(cs)))
+        sub.subset(font)
+        buf = io.BytesIO()
+        font.flavor = "woff2"
+        font.save(buf)
+        b64 = base64.b64encode(buf.getvalue()).decode()
+        rng = AR_RANGE if arabic else LATIN_RANGE
+        faces.append(f"@font-face{{font-family:'{FACE_NAME[fam]}';font-weight:{weight};font-style:normal;"
+                     f"src:url(data:font/woff2;base64,{b64}) format('woff2');unicode-range:{rng}}}")
+    return "".join(faces)
+
+
+def font_css():
+    css = "".join(subset_face(fam, w, chars | {" "}) for (fam, w), chars in sorted(USED.items()))
+    USED.clear()
+    return css
 
 
 def lum(hexc):
@@ -60,14 +139,17 @@ def lu(name, x, y, size, color, sw=2):
 
 
 def text(x, y, s, size, fill=INK, weight=400, anchor="start", family=LAT, extra=""):
-    return (f'<text x="{x}" y="{y}" font-family="{family}" font-size="{size}" font-weight="{weight}" '
+    fam = FAMILY_KEY[family]
+    w = snap(fam, weight)
+    USED[(fam, w)].update(s)
+    return (f'<text x="{x}" y="{y}" font-family="{family}" font-size="{size}" font-weight="{w}" '
             f'fill="{fill}" text-anchor="{anchor}" {extra}>{escape(s)}</text>')
 
 
 def svg(w, h, body, defs="", style="", title=""):
     t = f"<title>{escape(title)}</title>" if title else ""
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img">'
-            f'{t}<defs>{defs}</defs><style>{style}@media (prefers-reduced-motion: reduce){{*{{animation:none!important}}}}</style>'
+            f'{t}<defs>{defs}</defs><style>{font_css()}{style}@media (prefers-reduced-motion: reduce){{*{{animation:none!important}}}}</style>'
             f'{body}</svg>')
 
 
@@ -182,7 +264,7 @@ def build_nav():
     items = [("projects", "Projects", "rocket", "#8B5CF6"), ("stack", "Stack", "layers", "#06B6D4"),
              ("principles", "Principles", "shield-check", "#22C55E"), ("contact", "Contact", "mail", "#F59E0B")]
     for slug, label, icon, c in items:
-        w = 44 + tw(label, 15, True) + 20
+        w = 44 + tw(label, 15, 600) + 20
         w = int(w)
         body = (f'<rect x=".5" y=".5" width="{w - 1}" height="42" rx="21" fill="{PANEL}" stroke="{c}" stroke-opacity=".55"/>'
                 f'{lu(icon, 16, 11, 20, c)}{text(44, 27.5, label, 15, INK, 600)}')
@@ -305,10 +387,16 @@ PROJECTS = [
 ]
 
 
+def fit_size(s, size, avail, weight=800):
+    return round(min(size, size * avail / tw(s, size, weight)), 1)
+
+
 def build_cards():
     W, H = 480, 222
     for slug, title, ar, repo, acc, icon, tag, l1, l2, chips, featured in PROJECTS:
         c1, c2 = ACCENTS[acc]
+        for line in (l1, l2):
+            assert tw(line, 14, 500) <= W - 44, f"{slug}: line too wide: {line}"
         d = grad("a", c1, c2) + grad("p", PANEL2, "#0A1228", 0, 0, 0, 1) + grad("top", c1, c2, 0, 0, 1, 0)
         style = ("@keyframes shine{0%{transform:translateX(-520px)}100%{transform:translateX(520px)}}"
                  ".sh{animation:shine 6s ease-in-out infinite}")
@@ -320,11 +408,11 @@ def build_cards():
              f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="20" fill="none" stroke="{EDGE}"/>',
              f'<rect x="22" y="24" width="56" height="56" rx="16" fill="url(#a)"/>',
              lu(icon, 36, 38, 28, "#FFFFFF"),
-             text(94, 44, title, 20, INK, 800, extra='letter-spacing="-0.3"'),
+             text(94, 44, title, fit_size(title, 20, W - 22 - 94 - (tw(tag, 12, 700, MONO) + 34 if tag else 0)), INK, 800, extra='letter-spacing="-0.3"'),
              text(94, 68, ar, 15, c1, 600, family=ARF)]
         right = W - 22
         if tag:
-            tww = int(tw(tag, 12, True) + 22)
+            tww = int(tw(tag, 12, 700, MONO) + 22)
             b.append(f'<rect x="{right - tww}" y="14" width="{tww}" height="22" rx="11" fill="{c1}" fill-opacity=".16" stroke="{c1}" stroke-opacity=".6"/>')
             b.append(text(right - tww / 2, 29.5, tag, 12, INK, 700, "middle", MONO))
         if featured:
@@ -334,7 +422,7 @@ def build_cards():
         b.append(f'<line x1="22" y1="146" x2="{W - 22}" y2="146" stroke="#1D2B55"/>')
         cx = 22
         for kind, key, label in chips:
-            cw = int(22 + 18 + tw(label, 12.5, True) + 6)
+            cw = int(22 + 18 + tw(label, 12.5, 600) + 6)
             if cx + cw > W - 22:
                 break
             b.append(f'<rect x="{cx}" y="158" width="{cw}" height="28" rx="14" fill="#0A1230" stroke="{EDGE}"/>')
@@ -342,7 +430,9 @@ def build_cards():
             b.append(text(cx + 30, 176.5, label, 12.5, INK, 600))
             cx += cw + 8
         b.append(text(22, 208, f"github.com/Dev-saged/{repo}", 11.5, MUTED, 500, family=MONO))
-        b.append(text(right - (22 if featured else 0), 208, "Open  ↗", 12.5, c1, 700, "end"))
+        ox = right - (22 if featured else 0)
+        b.append(lu("arrow-up-right", ox - 14, 196.5, 14, c1, 2.4))
+        b.append(text(ox - 18, 208, "Open", 12.5, c1, 700, "end"))
         write(f"cards/{slug}.svg", svg(W, H + 14, "".join(b), d, style, f"{title} — {ar}"))
 
 
@@ -369,7 +459,7 @@ def build_stack():
         x0, x, rowy, rows = 250, 250, 0, 1
         placed = []
         for slug, label in items:
-            cw = int(22 + 22 + tw(label, 14, True) + 8)
+            cw = int(22 + 22 + tw(label, 14, 600) + 8)
             if x + cw > W:
                 x, rowy, rows = x0, rowy + 50, rows + 1
             placed.append((slug, label, x, rowy, cw))
